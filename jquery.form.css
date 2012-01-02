@@ -1,0 +1,248 @@
+﻿/********************************
+ * FORM
+ * jquery.form.css
+ ********************************/
+
+form{
+    margin:0;
+    padding:0;
+}
+    /********************************
+     * Normal elements
+     ********************************/
+
+		
+	form label.required:after{
+	    content:" *";
+	}
+
+
+    /********************************
+     * TEXTAREA.EDITOR
+     ********************************/
+    form textarea.source
+    ,form iframe.editor
+    ,form div.editor{
+        display:block;
+        width:100%;
+        height:300px;
+        padding:0;
+        border: 1px solid silver;
+    }
+    
+    form iframe.source
+    ,form div.source{
+        visibility:hidden;
+        height:1px !important;
+        position:absolute;
+    }
+    
+    .toolbar{
+        padding:2px 0;
+        width:100%;
+        background:#f8f8f8;
+        border:1px solid silver;
+        border-bottom:0;
+        font-size:11px;
+    }
+        .toolbar span.tool{
+            display:inline-block;
+        }
+        .toolbar button, 
+        .toolbar span{
+            font-size:inherit;
+            border:0;
+            background-color:#f8f8f8;
+            padding:1px 4px;
+            margin-right:-1px;
+        }
+        .toolbar button:focus{
+            background-color:white;
+        }
+        .toolbar button:hover
+     	,.toolbar button.selected{
+            background-color:silver;
+        }
+        .toolbar button[disabled]:hover{
+            background-color:transparent;
+        }
+        .toolbar select{
+            font-size:inherit;
+            border:1px solid silver;
+            margin-left:1px;
+        }
+        .toolbar button[disabled]
+        ,.toolbar select[disabled]
+        ,.toolbar span.tool[disabled]
+        ,.toolbar button[disabled] b{
+            color:#dddddd;
+        }
+
+
+/*********************************
+ * error message
+ *********************************/
+    input.invalid{
+    	outline:1px solid gold;
+	}
+
+    div.errormsg{
+        padding:5px;
+        position:absolute;
+        display:inline-block;
+        color:white;
+        margin:2px;
+        background-color:red;
+    }
+		div.errormsg:before{
+			position:absolute;
+			content:" ";
+			width:0;
+			height:0;
+			padding:0;
+			margin-left:-15px;
+			border:10px solid transparent;
+			border-right-color:red;
+			border-left-width:0;
+		}
+
+    input.invalid + div.errormsg{
+    	
+    }
+    
+/*************************
+ * Placeholder
+ *************************/
+   	input.placeholder,
+   	textarea.placeholder{
+   		color:#bbb;
+	}
+
+   	input:after{
+   		content:attr( placeholder );
+	}
+
+/*************************
+ * type.range
+ *************************/
+	input.range{
+		padding-bottom:-20px;
+		border:0;
+		cursor:pointer;
+		color:transparent;	
+	background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+kAAAAeCAYAAABQQl9DAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADscAAA7HATiSL3YAAAO9SURBVHhe7d0xbttAEAVQKmlTBCl8AQcQYMG5i3MTnkQQoKvEN1GhQpFvEANJI5MUQ6pJxXUZzOwTwMrN/DcLGB+iyKbxIUCAAAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAECBP4JrGAQIECAAAEC8QT2+33fdd3Hdyb/1bbtl3jpTEyAAAECBOoVUNLr3b3kBAgQIBBYYLvdjt+fnhYTXC6X1x/Pz91U0u8CxzQ6AQIECBCoTuBDdYkFJkCAAAECSQSGYWiWrn76mw8BAgQIECAQT0BJj7czExMgQIAAgZvAXMSXrrm8+xAgQIAAAQLxBJT0eDszMQECBAgQuAkMfb98KelOCQECBAgQCCmgpIdcm6EJECBAgMBU0gu3u1+VdEeEAAECBAiEFFDSQ67N0AQIECBAoFzSh+sVEQECBAgQIBBQQEkPuDQjEyBAgACBWaCfbndfuoaug0SAAAECBAgEFFDSAy7NyAQIECBAYBYoPt3dN+kOCQECBAgQCCmgpIdcm6EJECBAgIDfpDsDBAgQIEAgo4CSnnGrMhEgQIBAFQKlV7B5T3oVR0BIAgQIEEgooKQnXKpIBAgQIFCHQPHp7m53r+MQSEmAAAEC6QRWu91uvPpHnm6xAhEgQIBAfoFvj4+LIS9vb83xeMyPICEBAgQIEEgmsNput+Nms0kWSxwCBAgQIJBb4HA4NJuHh8WQ8+3up9OpWa/XuSGkI0CAAAECyQTmkv57yvQpWS5xCBAgQIBAeoFSAe+mb9J/ns/pDQQkQIAAAQLZBFbZAslDgAABAgRqEJjvhPt6f78Ydfq9+uv55aVr2/auBg8ZCRAgQIBAFgEPjsuySTkIECBAoDqB0oPj5r/5ECBAgAABAvEElPR4OzMxAQIECBC4CZRewTZ4KKxTQoAAAQIEQgoo6SHXZmgCBAgQINA0pW/S+75HRIAAAQIECAQUUNIDLs3IBAgQIEBgFvCedOeAAAECBAjkE1DS8+1UIgIECBCoRGCYvi0vXZUwiEmAAAECBFIJKOmp1ikMAQIECNQk4DfpNW1bVgIECBCoRUBJr2XTchIgQIBAOgFPd0+3UoEIECBAgECjpDsEBAgQIEAgqMD8cLilyyvYgi7V2AQIECBQvYCSXv0RAECAAAECUQU83T3q5sxNgAABAgSWBZR0p4MAAQIECAQVcLt70MUZmwABAgQIFASUdMeDAAECBAjEFPjzzivYPo/jOMSMZmoCBAgQIECAAAECBAgQIECAAAECBAgQIPCfBf4CXCs3jGOIZn4AAAAASUVORK5CYII=) no-repeat center center;
+	}
+
+
+/*************************
+ * input.number 
+ *************************/
+	input.number{
+		margin-right:0;
+		padding-right: 22px;
+	}
+	span.number{
+		margin-right: 32px;
+		margin-left: -15px;
+		display:inline-block;
+		vertical-align:middle;
+	   -moz-user-select: -moz-none;
+	   -khtml-user-select: none;
+	   -webkit-user-select: none;
+	   user-select: none;
+   	}
+		span.number span{
+			border:10px solid transparent;
+			border-width:10px 5px;
+			display:block;
+			width:0;
+			height:0;
+			margin:2px;
+			border-bottom-width:0;
+			border-bottom-color:gray;
+			border-top-color:gray;
+		}
+		span.number span:hover{
+			border-bottom-color:black;
+			border-top-color:black;
+		}
+		span.number :first-child{
+			border-bottom-width:10px;
+			border-top-width:0;
+		}
+
+
+/*************************
+ * Calendar
+ *************************/
+	div.calendar{
+		display:inline-block;
+		color:white;
+	}
+		div.calendar div{
+			background:blue;
+			position:absolute;
+			width:auto;
+			box-shadow:0 0 10px black;
+			border-radius:5px;
+		}
+			div.calendar table{
+			    border-collapse: collapse;
+			    border-spacing: 0;
+			    margin-bottom: 20px;
+			    width:100%;
+				width:auto;
+				margin:10px;
+			}
+				div.calendar table caption{
+					background:inherit;
+					width:inherit;
+					text-align:justify;
+					margin-bottom:10px;
+				}
+					div.calendar table caption .current{
+						margin:auto 10px;
+						font-weight:bold;
+					}
+				div.calendar table th,
+				div.calendar table td{
+					text-align:center;
+					border: 1px solid #99CCFF;
+					border: 1px solid rgba(255,255,255,0.3);
+					padding:0;
+				}
+				div.calendar table td{
+					padding:0 6px;
+				}
+				div.calendar td.selected{
+					background:#99CCFF;
+				}
+
+					div.calendar a{
+						color:inherit;
+						text-decoration:none;
+					}
+
+/*************************
+ * Datalist
+ *************************/
+div.datalist{
+	display:none;
+	position:absolute;
+	background-color:white;
+}
+input.datalist + div.datalist{
+	display:block;
+}
+	div.datalist ul{
+		margin:5px;
+		padding:0;
+	}
+		div.datalist ul li{
+			list-style:none;
+			padding:5px;
+		}
+		div.datalist ul li:hover{
+			text-decoration:underline;
+			background-color:#efefef;
+		}

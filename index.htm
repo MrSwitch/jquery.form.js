@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Good Form</title>
+	<script src="static/jquery.js"></script>
+	<script src="jquery.form.js"></script>
+	<link href="jquery.form.css" rel="stylesheet"/>
+	<link href="static/style.css" rel="stylesheet"/>
+	<script>
+		(function(){
+			var a = "header,section,datalist".split(",");
+			for( var x in a ){
+				if(!a.hasOwnProperty(x)){
+					continue;
+				}
+				var e = document.createElement(a[x]);
+			}
+		})();
+	</script>
+</head>
+<body>
+	<header>
+		<h1>I say, good &lt;form&gt;!</h1>
+		<blockquote>
+			Wot'O, this is a jolly jQuery plugin for adding cheeky HTML5 forms to your site and wotnot. So simple to use you'll be done before morning tea.
+		</blockquote>
+	</header>
+
+	<section>
+	    <h2>[type=*]</h2>
+	    <form>
+	            <label class="required">text</label> 
+	            <input type="text" required/>
+	            <br />
+	            <label>search</label>
+	            <input type="search" placeholder="Search me" />
+	            <br />
+	            <label>range</label>
+	            <input type="range" step="0.5" min="0" max="10"/>
+	            <br />
+	            <label>date</label>
+	            <input type="date" placeholder="Date" />
+	            <br />
+	            <label>time</label>
+	            <input type="time" />
+	            <br />
+	            <label>number</label>
+	            <input type="number" placeholder="Number 1-10" max="10" min="0"/>
+	            <br />
+	            <label>color</label>
+	            <input type="color" placeholder="Choose a color"/>
+	            <br />
+	            <label>email</label>
+	            <input type="email" placeholder="e.g. me@example.com"/>
+	            <br />
+	            <label>url</label>
+	            <input type="url" placeholder="e.g. http://example.com"/>
+	            <br />
+				<label class="required">accept</label>
+	            <input type="checkbox" required="required"/>
+	            <br />
+	            
+	            <button type="submit">Submit</button>
+	    </form>
+	</section>
+
+	<section>
+	    <h2>[attr]</h2>
+	    <form>
+	            <label>[required]</label>
+	            <input type="text" required />
+	            <br />
+	            <label>[placeholder]</label>
+	            <input type="text" placeholder="thingy n' wotnot"/>
+	            <br />
+	            <label>[max]</label>
+	            <input type="number" max="100"/>
+	            <br />
+	            <label>[min]</label>
+	            <input type="number" min="100"/>
+	            <br />
+	            <label>[pattern]</label>
+	            <input type="text" pattern=""/>
+	            <br />
+	            
+	            <button type="submit">Submit</button>
+	    </form>
+	</section>
+
+
+	<section>
+	    <h2>textarea</h2>
+	    <form>
+	            <label>&lt;textarea&gt;</label>
+	            <textarea placeholder="Expands as you type"></textarea>
+	            <br />
+	    </form>
+	</section>
+
+
+	<section>
+	    <h2>textarea[type=html]</h2>
+	    <form>
+				<textarea type="html" style="width:400px;height:200px;">
+				
+				</textarea>
+	            <button type="submit">Submit</button>
+	    </form>
+	</section>
+	
+	<section>
+	    <h2>datalist</h2>
+	    <form>
+				<input list="datalist" type="text" placeholder="AutoComplete"/>
+				<datalist id="datalist">
+					<option value="Hello" />
+					<option value="Yo" />
+					<option value="To my Dearest" />
+					<option value="Oi you, no!" />
+				</datalist><br />
+	            <button type="submit">Submit</button>
+	    </form>
+	</section>
+
+
+	
+	<script>
+		/**
+		 * Create the <pre> code snipets
+		 */
+		$("section form").each(function(){
+			$("<pre></pre>").text($(this).html().replace(/^\n+\s*/,"").replace(/\n\s*/g,"\n")).insertAfter(this);
+		});
+	</script>
+
+	<script>
+		/**
+		 * Bind additional controls to the form
+		 */
+		$("form").form();
+	</script>
+
+	<script src="static/jsprettify.packed.js"></script>
+	<script>prettyPrint();</script>
+
+
+</body>
+</html>

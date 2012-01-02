@@ -1,0 +1,44 @@
+﻿button.syntaxswitch{
+	float:right;
+	background:white;
+	border:1px solid gray;
+	font-size:10px;
+}
+
+ol.pre, pre{
+	color:silver;
+	margin:0;
+	font-family:"Lucida Console", Arial;
+	font-size:11px;
+	padding:10px 0 10px 30px;
+}
+pre{
+	color:black;
+	white-space:pre-wrap;
+	margin:10px 0 10px 30px;
+	padding:0;
+	padding-left:10px;
+	background-color:white;
+	border-left:10px solid silver;
+}
+ol.pre li{
+	margin:0;
+	padding:0;
+	padding-left:10px;
+	border-left:10px solid silver;
+}
+ol.pre li:hover{
+	color:red;
+}
+ol.pre li:nth-child(odd){
+}
+ol.pre li span{
+	color:black;
+	white-space:pre-wrap;
+}
+ol.pre li span.comment{
+	color:gray;
+}
+ol.pre li span.function{
+	color:green;
+}
