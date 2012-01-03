@@ -73,6 +73,9 @@
 
 		// REQUIRED ATTRIBUTES
 		var type  = $el.attr('type'),
+			min = $el.attr('min'),
+			max = $el.attr('max'),
+			step = $el.attr('step'),
 			example = {
 				url : "http://www.domain.com",
 				time : "12:30",
@@ -87,9 +90,9 @@
 				tooLong      : "Too Long",
 				typeMismatch  : "Not a valid " + type + ( example ? " (e.g. " +example+ ")" : ''),
 				patternMismatch  : "Invalid pattern",
-				rangeOverflow : "Overflow",
-				rangeunderflow : "Underflow",
-				stepMismatch : "Mismatch"
+				rangeOverflow : "Value must be less than or equal to "+max,
+				rangeUnderflow : "Value must be greater than or equal to "+min,
+				stepMismatch : "Invalid value"
 			};
 		
 		// 
@@ -104,13 +107,13 @@
 			tooLong      : false,
 			typeMismatch   : (value.length>0)&&(type in m)&&!value.match( m[type] ),
 			patternMismatch  : pattern&&(value.length>0)&&!value.match( new RegExp('^'+pattern+'$') ),
-			rangeOverflow : $el.attr('max') && value > parseFloat($el.attr('max')),
-			rangeUnderflow : $el.attr('min') && value < parseFloat($el.attr('min')),
-			stepMismatch : $el.attr('step') && value%parseFloat($el.attr('step')),
+			rangeOverflow : max && value.length && value > parseFloat(max),
+			rangeUnderflow : min && value.length && value < parseFloat(min),
+			stepMismatch : step && value.length && value%parseFloat(step),
 			customError : false,
 			valid : false // default
 		};
-		
+
 		// if this is a color?
 		if(type==='color'&&value.length>0){
 			// does it work?
@@ -1078,13 +1081,24 @@
 	};
 
 	/**
-	 * Range
+	 * input[type=number]
+	 * Adds up and down controls to increment/decrement a number field
+	 * Controls: can be clicked once or held down
 	 */
 	$.fn.number = function(){
 	
 		if($.support.number){
 			return false;
 		}
+
+		// kill iterations to increase the value
+		var interval = null;
+		$(document.body).mouseup(function(){
+			if(interval){
+				clearTimeout(interval);
+			}
+		});
+
 		// check for support for the input[type=number] attribute
 		return ( $(this).is("[type=number]") ? $(this) : $("input", this) ).filter("[type=number]").each(function(){
 			// Found
@@ -1094,30 +1108,51 @@
 				w = $(this).outerWidth(),
 				min = $(this).attr('min'),
 				max = $(this).attr('max'),
-				step = $(this).attr('step')||1;
+				step = parseFloat($(this).attr('step'))||1;
 
-			$(this)
+
+			var $span = $(this)
 				// add the controls
 				.after('<span class="number" unselectable="on"><span unselectable="on"></span><span unselectable="on"></span></span>')
 				.addClass("number")
 				.find("+ span.number")
 				.attr("unselectable", true)
 				.find("span")
-				.click(function(e){
-					var i = $(this).parent().children().index(this),
-						n = (parseInt($(el).val())||0)+(i?-step:step);
-					if(n>max){
-						n=max;
-					}
-					if(n<min){
-						n=min;
-					}
-					$(el).val(n);
+				.mousedown(function (e){
+					var i = $(this).parent().children().index(this);
+					
+					(function change(){
+						var n = (parseInt($(el).val())||0)+(i?-step:step);
+						if(n>max){
+							n=max;
+						}
+						if(n<min){
+							n=min;
+						}
+						$(el).val(n);
+
+						interval = setTimeout(change,100);
+					})();
+					
+				})
+				.parents('span.number');
+
+			// add dimensions
+			setTimeout(function(){
+
+				var pR = 0,// parseInt($(el).css("paddingRight")),
+					mR = parseInt($(el).css("marginRight"));
+
+				$(el).css({
+					paddingRight: ( pR + 22 )+"px",
+					marginRight: 0,
+					width :  ($(el).width() - ($(el).outerWidth() - w)) + "px"
 				});
 
-			// add validation
-			setTimeout(function(){
-				$(el).width( $(el).width() - ($(el).outerWidth() - w) );
+				$span.css({
+					marginRight:mR+"px",
+					marginTop: ( $(el).offset().top - $span.offset().top ) + 'px'
+				});
 			},1);
 		});
 	};
@@ -1144,8 +1179,7 @@
 		// loop through and add events
 		return $(this).each(function(){
 		
-
-			// 
+			// bind events
 			$(this)
 				.bind("selectstart",function(e){return false;})
 				.bind("touchstart touchmove",function(e){

@@ -92,7 +92,9 @@ form{
         display:inline-block;
         color:white;
         margin:2px;
+        font-weight:normal;
         background-color:red;
+        z-index:1;
     }
 		div.errormsg:before{
 			position:absolute;
@@ -159,8 +161,8 @@ form{
 			height:0;
 			margin:2px;
 			border-bottom-width:0;
-			border-bottom-color:gray;
-			border-top-color:gray;
+			border-bottom-color:#555555;
+			border-top-color:#555555;
 		}
 		span.number span:hover{
 			border-bottom-color:black;
