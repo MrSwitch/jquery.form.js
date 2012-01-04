@@ -145,7 +145,7 @@ form{
 	}
 	span.number{
 		margin-right: 32px;
-		margin-left: -15px;
+		margin-left: -20px;
 		display:inline-block;
 		vertical-align:middle;
 	   -moz-user-select: -moz-none;
@@ -244,7 +244,8 @@ input.datalist + div.datalist{
 			list-style:none;
 			padding:5px;
 		}
-		div.datalist ul li:hover{
+		div.datalist ul li:hover, 
+		div.datalist ul li.hover{
 			text-decoration:underline;
 			background-color:#efefef;
 		}

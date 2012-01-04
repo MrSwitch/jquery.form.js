@@ -49,11 +49,26 @@
         return (p.src?p.src:p.getAttribute('src')).match(/(.*\/)/)[0] || "";
 	})();
 
+
+	/**
+	 * Basic Custom events for user interactions
+	 */
+	$(":input").live('keydown', function(e){
+		if(e.which===40){
+			$(this).trigger('down');
+		}
+		if(e.which===38){
+			$(this).trigger('up');
+		}
+	});
+
 	// the interval would be better if it was per input
 	var interval;
 
-	// CheckValidity
-	// is a shim for the normal method
+	/** 
+	 * CheckValidity
+	 * Our shim for which recreates the CheckValidity of HTML5 input's upon form submission
+	 */
 	function checkValidity(elem){
 
 		if ('checkValidity' in elem){
@@ -212,14 +227,30 @@
 			}
 		});
 	}
-	
+
+
 	/**
-	 * Datalist
+	 * input[list=id]
+	 * Datalist provides a mechanism for suggesting values in an input field
 	 */
 	if(!$.support.datalist){
+
+		// Add keyup event to build the list based on user suggestions
 		$('input[list]').live("keyup",function(e){
+
 			// Show
 			$(this).addClass("datalist");
+
+			// $list
+			var $list = $(this).nextUntil(":input").filter("div.datalist").eq(0);
+			if($list.length===0){
+				$list = $("<div class='datalist'></div>").insertAfter(this);
+			}
+
+			// dont change the list?
+			if((e.which===38||e.which===40)&&$list.find("ul").length>0){
+				return;
+			}
 
 			// get the datalist
 			var list = [],
@@ -232,12 +263,7 @@
 				}
 			});
 
-			// $list
-			var $list = $(this).nextUntil("input").filter("div.datalist").empty();
-			if($list.length===0){
-				$list = $("<div class='datalist'></div>").insertAfter(this);
-			}
-
+			$list.empty();
 			$list.width($(this).width());
 
 			// AppendTo DOM
@@ -249,11 +275,25 @@
 			$(this).parents("div.datalist").prevAll("input[list]").eq(0).val( $(this).text() );
 		});
 
+		$('input[list]').live("up down",function(e){
+			var $list = $(this).nextUntil(":input").filter("div.datalist").eq(0),
+				$sel = $list.find("li.hover");
+			if($sel.length){
+				$sel = $sel[e.type==='up'?'prev':'next']().addClass('hover');
+				$sel[e.type==='down'?'prev':'next']().removeClass('hover');
+			}
+			else{
+				$sel = $list.find("li:first").addClass('hover');
+			}
+			$(this).val($sel.text());
+		});
+
+		// hide the datalist on blur
 		$('input[list]').live("blur",function(e){
 			// self
 			var self = this;
 
-			// hide
+			// hide on timeut, because it might have been the datalist which was selected
 			setTimeout(function(){
 				$(self).removeClass("datalist");
 			},100);
@@ -1086,7 +1126,7 @@
 	 * Controls: can be clicked once or held down
 	 */
 	$.fn.number = function(){
-	
+
 		if($.support.number){
 			return false;
 		}
@@ -1110,6 +1150,17 @@
 				max = $(this).attr('max'),
 				step = parseFloat($(this).attr('step'))||1;
 
+			// Listen for up down events on the element
+			$(this).bind('up down', function(e){
+				var n = (parseInt($(this).val())||0)+(e.type==='up'?step:-step);
+				if(n>max){
+					n=max;
+				}
+				if(n<min){
+					n=min;
+				}
+				$(this).val(n);
+			});
 
 			var $span = $(this)
 				// add the controls
@@ -1122,15 +1173,10 @@
 					var i = $(this).parent().children().index(this);
 					
 					(function change(){
-						var n = (parseInt($(el).val())||0)+(i?-step:step);
-						if(n>max){
-							n=max;
-						}
-						if(n<min){
-							n=min;
-						}
-						$(el).val(n);
+						// trigger up down events
+						$(el).trigger(i?"down":"up");
 
+						// press'n'hold can be cancelled by keyup (above)
 						interval = setTimeout(change,100);
 					})();
 					
