@@ -2,10 +2,19 @@
 <html>
 <head>
 	<title>Good Form</title>
+
+	<link href="static/style.css" rel="stylesheet"/>
+
+	<!-- Plugins -->
+	<link href="jquery.form.css" rel="stylesheet"/>
+	<link href="jquery.editor.css" rel="stylesheet"/>
+
 	<script src="static/jquery.js"></script>
 	<script src="jquery.form.js"></script>
-	<link href="jquery.form.css" rel="stylesheet"/>
-	<link href="static/style.css" rel="stylesheet"/>
+	<script src="jquery.editor.js"></script>
+	<!-- EOF Plugins -->
+
+
 	<script>
 		(function(){
 			var a = "header,section,datalist".split(",");
@@ -27,7 +36,7 @@
 	</header>
 
 	<section>
-	    <h2>[type=*]</h2>
+	    <h2>input[type=*]</h2>
 	    <form>
 	            <label class="required">text</label> 
 	            <input type="text" required/>
@@ -65,7 +74,7 @@
 	</section>
 
 	<section>
-	    <h2>[attr]</h2>
+	    <h2>input[*]</h2>
 	    <form>
 	            <label>[required]</label>
 	            <input type="text" required />
@@ -85,6 +94,15 @@
 	            <label>[step]</label>
 	            <input type="number" step="2"/>
 	            <br />
+			    <label>[datalist]</label>
+				<input list="datalist" type="text" placeholder="Predictive"/>
+				<datalist id="datalist">
+					<option value="Hello" />
+					<option value="Yo" />
+					<option value="To my Dearest" />
+					<option value="Oi you, no!" />
+				</datalist><br />
+	            <button type="submit">Submit</button>
 	            
 	            <button type="submit">Submit</button>
 	    </form>
@@ -104,28 +122,11 @@
 	<section>
 	    <h2>textarea[type=html]</h2>
 	    <form>
-				<textarea type="html" style="width:400px;height:200px;">
-				
-				</textarea>
+				<textarea type="html" style="width:400px;height:200px;">Write here</textarea>
 	            <button type="submit">Submit</button>
 	    </form>
 	</section>
 	
-	<section>
-	    <h2>datalist</h2>
-	    <form>
-				<input list="datalist" type="text" placeholder="AutoComplete"/>
-				<datalist id="datalist">
-					<option value="Hello" />
-					<option value="Yo" />
-					<option value="To my Dearest" />
-					<option value="Oi you, no!" />
-				</datalist><br />
-	            <button type="submit">Submit</button>
-	    </form>
-	</section>
-
-
 	
 	<script>
 		/**
