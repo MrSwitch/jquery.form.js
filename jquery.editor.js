@@ -12,7 +12,7 @@
 	$.make = function(s){
 		var a = {};
 		s = s.replace(/([\.\#]|\[[a-z]+(\=|\])?)?([a-z0-9\_]*)\]?/ig, function(m,attr,join,val,i){
-			if(attr==='.'){ a.class = val; }
+			if(attr==='.'){ a['class'] = val; }
 			else if(attr==='#'){ a.id = val; }
 			else if(attr){ a[attr.replace(/[^a-z]/ig,'').toLowerCase()] = val; }
 			return '';
@@ -71,8 +71,6 @@
 				obj	= win.getSelection().anchorNode;
 				text= win.getSelection().toString();
 				sel	= win.getSelection();
-		
-				log(sel,text,obj);
 		
 				// Mozilla seems to be selecting the wrong Node, the one that comes before the selected node.
 				// I'm not sure if there's a configuration to solve this,

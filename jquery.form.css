@@ -28,28 +28,39 @@ form{
         padding:5px;
         position:absolute;
         display:inline-block;
-        color:white;
-        margin:2px;
+        color:black;
+        font-size:14px;
+        margin:0;
+        margin-left:10px;
         font-weight:normal;
-        background-color:red;
+        background-color:white;
+        border:1px solid black;
+        border-radius:5px;
+        box-shadow:5px 5px 5px rgba(0,0,0,0.5);
         z-index:1;
     }
-		div.errormsg:before{
+		div.errormsg:before,div.errormsg:after{
 			position:absolute;
+			left:-10px;
+			bottom:5px;
 			content:" ";
 			width:0;
 			height:0;
 			padding:0;
-			margin-left:-15px;
 			border:10px solid transparent;
-			border-right-color:red;
+			border-width:8px 10px;
+			border-right-color:black;
 			border-left-width:0;
 		}
+		div.errormsg:after{
+			border-right-color:white;
+			left:-8px;
+		}
 
-    input.invalid + div.errormsg{
-    	
-    }
-    
+	input.invalid + div.errormsg{
+
+	}
+
 /*************************
  * Placeholder
  *************************/

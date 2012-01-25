@@ -161,7 +161,15 @@
 				$el
 					.trigger('invalid')
 					.addClass('invalid') // ADD CLASS
-					.after('<div class="errormsg">'+errorMsgs[x]+'</div>'); // ADD DIV
+					.after('<div class="errormsg">'+errorMsgs[x]+'</div>');
+
+				setTimeout(function(){
+					$el
+						.removeClass('invalid')
+						.nextUntil(':input')
+						.filter("div.errormsg")
+						.fadeOut();
+				},10e3);
 
 				return false;
 			}
@@ -174,14 +182,14 @@
 	// Check a form, or an individual value
 	$.fn.checkValidity = function(){
 		
-		var b = true;
+		var b = false;
 		
 		// AN HTML FORM WOULDN'T POST IF THERE ARE ERRORS. HOWEVER
 		($(this).is(':input') ? $(this) : $(":input", this)).each(function(){
-			b = checkValidity(this) && b;
-		});	
+			b = b || !checkValidity(this);
+		});
 		
-		return b;
+		return !b;
 	},
 	
 
@@ -189,12 +197,16 @@
 	$('form').live('submit', function(e){
 
 		var b = $(this).checkValidity();
-		
+
 		if(b){
 			// if this has passed lets remove placeholders
 			$(":input.placeholder[placeholder]", this).val("");
 		}
 		else{
+			// find the item in question and focus on it
+			$('.invalid',this).get(0).focus();
+			
+			// prevent any further executions.. of course anything else could have been called.
 			e.preventDefault();
 			e.stopPropagation();
 		}

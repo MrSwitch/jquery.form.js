@@ -9,23 +9,33 @@
 	<link href="jquery.form.css" rel="stylesheet"/>
 	<link href="jquery.editor.css" rel="stylesheet"/>
 
-	<script src="static/jquery.js"></script>
+<script>
+//<![CDATA[
+		var local = ( /localhost/.test(window.location.host) ? 0 : 1);
+		function loadScript(a){
+			for(var i=0;i<a.length;i++){
+				document.write('<script src="'+a[i]+'"><\/script>');
+			}
+		}
+		loadScript([['/_packages/jquery.js','http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'][local]]);
+//]]>
+</script>
 	<script src="jquery.form.js"></script>
 	<script src="jquery.editor.js"></script>
 	<!-- EOF Plugins -->
 
-
 	<script>
 		(function(){
-			var a = "header,section,datalist".split(",");
+			var a = "header,section,datalist,option".split(",");
 			for( var x in a ){
-				if(!a.hasOwnProperty(x)){
-					continue;
+				if(a.hasOwnProperty(x)){
+					document.createElement(a[x]);
 				}
-				var e = document.createElement(a[x]);
 			}
 		})();
 	</script>
+	<style>
+	</style>
 </head>
 <body>
 	<header>
