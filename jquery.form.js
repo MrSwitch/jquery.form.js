@@ -170,16 +170,25 @@
 		return (elem.validity.valid = true);
 	};
 	
+	
+	// Check a form, or an individual value
+	$.fn.checkValidity = function(){
+		
+		var b = true;
+		
+		// AN HTML FORM WOULDN'T POST IF THERE ARE ERRORS. HOWEVER
+		($(this).is(':input') ? $(this) : $(":input", this)).each(function(){
+			b = checkValidity(this) && b;
+		});	
+		
+		return b;
+	},
+	
 
 	// Add form submit
 	$('form').live('submit', function(e){
 
-		var b = true;
-
-		// AN HTML FORM WOULDN'T POST IF THERE ARE ERRORS. HOWEVER
-		$(":input", this).each(function(){
-			b = checkValidity(this) && b;
-		});
+		var b = $(this).checkValidity();
 		
 		if(b){
 			// if this has passed lets remove placeholders
@@ -206,10 +215,11 @@
 		}
 		
 		if(e.type==='blur'||e.type==='focusout'){
-			checkValidity(this);
+			// check validity and provide information to user.
+			$(this).checkValidity();
 		} else {
 			var el = this;
-			interval = setTimeout(function(){checkValidity(el);},3000);
+			interval = setTimeout(function(){$(el).checkValidity();},3000);
 		}
 	});
 
