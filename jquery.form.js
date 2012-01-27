@@ -71,8 +71,8 @@
 	 */
 	function checkValidity(elem){
 
-		if ('checkValidity' in elem){
-			return null;
+		if (elem && 'checkValidity' in elem){
+			return elem.checkValidity();
 		}
 	
 		var $el = $(elem),
@@ -182,14 +182,16 @@
 	// Check a form, or an individual value
 	$.fn.checkValidity = function(){
 		
-		var b = false;
+		var b = true;
 		
 		// AN HTML FORM WOULDN'T POST IF THERE ARE ERRORS. HOWEVER
 		($(this).is(':input') ? $(this) : $(":input", this)).each(function(){
-			b = b || !checkValidity(this);
+			if(b){
+				b = checkValidity(this);
+			}
 		});
 		
-		return !b;
+		return b;
 	},
 	
 
@@ -204,7 +206,10 @@
 		}
 		else{
 			// find the item in question and focus on it
-			$('.invalid',this).get(0).focus();
+			var $first = $('.invalid',this);
+			if($first.length){
+				$first.get(0).focus();
+			}
 			
 			// prevent any further executions.. of course anything else could have been called.
 			e.preventDefault();
@@ -763,7 +768,7 @@
 	 */
 	$.fn.form = function(){
 	
-		return $(this).each(function(){
+		return ( $(this).is('form') ? $(this) : $('form',this)).each(function(){
 
 			// Add the placeholder support
 			$(":input[placeholder]", this).placeholder();
@@ -773,7 +778,28 @@
 
 			// Add range
 			$("input[type=range]", this).range();
+		
+		// prevent propagation of the form if it fails.
+		// this has to be bound to the form element directly, before additional events are added, otherwise it may not be executed.
+		}).submit(function(e){
+			var b = $(this).checkValidity();
 
+			if(b){
+				// if this has passed lets remove placeholders
+				$(":input.placeholder[placeholder]", this).val("");
+			}
+			else{
+				// find the item in question and focus on it
+				var $first = $('.invalid',this);
+				if($first.length){
+					$first.get(0).focus();
+				}
+
+				// prevent any further executions.. of course anything else could have been called.
+				e.preventDefault();
+				e.stopPropagation();
+			}
+			return b;
 		});
 	};
 		
