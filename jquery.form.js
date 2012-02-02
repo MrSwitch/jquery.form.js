@@ -647,6 +647,10 @@
 					n=min;
 				}
 				$(this).val(n);
+			}).bind('blur', function(){
+				if( $(this).val() !== $(this).filter('.placeholder').attr('placeholder') ){
+					$(this).val( $(this).val().replace(/[^\d\.\-]/ig,'') );
+				}
 			});
 
 			var $span = $(this)
