@@ -391,7 +391,7 @@
 		// 
 		try{
 			log([window, cmd, value]);
-			document.execCommand(cmd, true, value);
+			document.execCommand(cmd, false, value);
 		}
 		catch(e){
 			//IE WAY to insert at the current point
