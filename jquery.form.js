@@ -13,8 +13,9 @@
 
 	// test for support
 	$.support.datalist = (function(){
-		var test = document.createElement('datalist');
-		return ('datalist' in test);
+		var test = document.createElement('input');
+		test.setAttribute('list','hello');
+		return ('list' in test);
 	})();
 
 	// test for support
