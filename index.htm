@@ -40,13 +40,19 @@
 <body>
 	<header>
 		<h1>I say, good &lt;form&gt;!</h1>
-		<blockquote>
+		<p>
 			Wot'O, this is a jolly jQuery plugin for adding cheeky HTML5 forms to your site and wotnot. So simple to use you'll be done before morning tea.
-		</blockquote>
+		</p>
 	</header>
 
+	<h2>$.form()</h2>
 	<section>
-	    <h2>input[type=*]</h2>
+		<pre>&lt;!-- start your form section --&gt;
+&lt;form&gt;</pre>
+	</section>
+
+	<section>
+	    <h3>input[type=*]</h3>
 	    <form>
 	            <label class="required">text</label> 
 	            <input type="text" required/>
@@ -75,16 +81,19 @@
 	            <label>url</label>
 	            <input type="url" placeholder="e.g. http://example.com"/>
 	            <br />
-				<label class="required">accept</label>
+				<label>file</label>
+	            <input type="file"/>
+	            <br />
+	            <label class="required">accept</label>
 	            <input type="checkbox" required="required"/>
 	            <br />
-	            
+
 	            <button type="submit">Submit</button>
 	    </form>
 	</section>
 
 	<section>
-	    <h2>input[*]</h2>
+	    <h3>input[*]</h3>
 	    <form>
 	            <label>[required]</label>
 	            <input type="text" required />
@@ -119,7 +128,7 @@
 
 
 	<section>
-	    <h2>textarea</h2>
+	    <h3>textarea</h3>
 	    <form>
 	            <label>&lt;textarea&gt;</label>
 	            <textarea placeholder="Expands as you type"></textarea>
@@ -127,9 +136,23 @@
 	    </form>
 	</section>
 
+	<section>
+		<pre>
+&lt;!-- end of form section --&gt;
+&lt;form&gt;
+
+&lt;!-- load in the shim --&gt;
+&lt;script src="jquery.form.js"&gt;&lt;script&gt;
+
+&lt;!-- ... and run --&gt;
+&lt;script&gt;$('form').form();&lt;script&gt;
+</pre>
+	</section>
+
+	<h2>$.editor()</h2>
 
 	<section>
-	    <h2>textarea[type=html]</h2>
+	    <h3>textarea[type=html]</h3>
 	    <form>
 				<textarea type="html" style="width:400px;height:200px;">Write here</textarea>
 	            <button type="submit">Submit</button>

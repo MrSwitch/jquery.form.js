@@ -20,12 +20,17 @@ header,section,datalist{
 
 header {
 	background:url("logo.jpg") no-repeat left top;
-	padding:10px 80px;
 	background-size:64px;
+	margin-bottom:40px;
 }
-header h1{
-	margin-top:0;
-}
+	header h1{
+		padding-left:80px;
+		margin:0;
+		font-size:4em;
+	}
+	header p{
+		font-size:2em;
+	}
 
 @media all and (max-width: 1000px) {
 	body{
@@ -35,6 +40,7 @@ header h1{
 
 h2{
 	margin-top:50px;
+	font-size:3em;
 }
 
 table
@@ -102,18 +108,11 @@ table
 		}
 
 
-blockquote{
-	background-color: #F5F7F5;
-	border: 1px solid #CCC;
-	padding: 15px;
-	margin: 0 0 35px 0;	
-}
-
 
 /**
  * FORM
  */
-pre,form{
+form + pre,form{
 	width:45%;
 	display:inline-block;
 	vertical-align:top;
@@ -128,6 +127,7 @@ pre,form{
 	label, input, textarea{
 		font-size:1.2em;
 		vertical-align:middle;
+		width:300px;
 	}
 
 /**
