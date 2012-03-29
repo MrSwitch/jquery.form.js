@@ -11,7 +11,7 @@
 
 <script>
 //<![CDATA[
-		var local = ( /localhost/.test(window.location.host) ? 0 : 1);
+		var local = ( /local/.test(window.location.host) ? 0 : 1);
 		function loadScript(a){
 			for(var i=0;i<a.length;i++){
 				document.write('<script src="'+a[i]+'"><\/script>');
@@ -154,7 +154,7 @@
 	<section>
 	    <h3>textarea[type=html]</h3>
 	    <form>
-				<textarea type="html" style="width:400px;height:200px;">Write here</textarea>
+				<textarea type="html" style="max-width:400px;height:200px;">Write here</textarea>
 	            <button type="submit">Submit</button>
 	    </form>
 	</section>

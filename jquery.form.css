@@ -3,14 +3,16 @@
  * jquery.form.css
  ********************************/
 
+
+/* normalize */
 form{
     margin:0;
     padding:0;
 }
+
     /********************************
      * Normal elements
      ********************************/
-
 		
 	form label.required:after{
 	    content:" *";
@@ -49,7 +51,7 @@ form{
 			padding:0;
 			border:10px solid transparent;
 			border-width:8px 10px;
-			border-right-color:black;
+			border-right-color:inherit;
 			border-left-width:0;
 		}
 		div.errormsg:after{
@@ -148,12 +150,24 @@ form{
 				div.calendar table caption{
 					background:inherit;
 					width:inherit;
-					text-align:justify;
+					text-align:center;
 					margin-bottom:10px;
 				}
 					div.calendar table caption .current{
-						margin:auto 10px;
+						margin:0;
+						text-align:center;
+						display:inline-block;
+						box-sizing:border-box;
+						-moz-box-sizing:border-box;
 						font-weight:bold;
+					}
+					div.calendar table caption a{
+						float:left;
+						text-align:left;
+					}
+					div.calendar table caption span + a{
+						float:right;
+						text-align:right;
 					}
 				div.calendar table th,
 				div.calendar table td{
@@ -181,7 +195,7 @@ div.datalist{
 	display:none;
 	position:absolute;
 	background-color:white;
-	border:1px solid grey;
+	border:1px solid gray;
 }
 input.datalist + div.datalist{
 	display:block;

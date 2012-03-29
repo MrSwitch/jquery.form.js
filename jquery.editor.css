@@ -7,9 +7,11 @@ form textarea.source
     display:block;
     width:100%;
     height:300px;
-    padding:0;
+    padding:5px;
     border: 1px solid silver;
     overflow:auto;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
 }
 
 form iframe.source
@@ -20,7 +22,9 @@ form iframe.source
 }
 
 .toolbar{
-    padding:2px 0;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    padding:2px;
     width:100%;
     background:#f8f8f8;
     border:1px solid silver;

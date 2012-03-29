@@ -5,6 +5,8 @@
  */
 (function($){
 
+	"use strict";
+
 	// test for support
 	$.support.placeholder = (function(){
 		var test = document.createElement('input');
@@ -575,6 +577,11 @@
 					return;
 				}
 
+				// FF bug
+				if(!e.offsetX){
+					e.offsetX = e.clientX - e.target.offsetLeft;
+				}
+
 				var w = $(this).width(),
 					v = ((e.offsetX/w)*(max-min))+min,
 					m = v%step;
@@ -825,10 +832,14 @@
 							vals: 	[] };
 	        $.each(data.props, function(i) { data.vals[i] = $el.prop(data.props[i]) || $el.css(data.props[i]) || $el.attr(data.props[i]); });
 
-	        if (typeof (this.onpropertychange) == "object"){
+	        if (typeof (this.onpropertychange) == "object" && "attachEvent" in this){
 	            this.attachEvent("onpropertychange", func );
+
+	        /**
+	         never seems to work
 	        } else if ($.browser.mozilla){
 	            $el.bind("DOMAttrModified", callback);
+	         */
 	        } else {
 	            setInterval( func, timeout);
 	        }

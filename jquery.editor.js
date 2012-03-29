@@ -1,14 +1,16 @@
 /**
  * jquery.editor.js
- * Adds WYSIWYG controls to TEXTAREA[type=html], or a contenteditable
+ * Adds WYSIWYG controls to TEXTAREA[type=html], or a [contenteditable] element
  * @author Andrew Dodson
  * @description WYSIWYG editor
  */
 (function($){
 
-	/**
-	 * Make creates a jquery element based on a CSS selector
-	 */
+	"use strict";
+
+	//
+	// Make creates a jquery element based on a CSS selector
+	//
 	$.make = function(s){
 		var a = {};
 		s = s.replace(/([\.\#]|\[[a-z]+(\=|\])?)?([a-z0-9\_]*)\]?/ig, function(m,attr,join,val,i){
@@ -18,11 +20,11 @@
 			return '';
 		});
 		return $('<'+(s||'div')+'>').attr(a);
-	}
+	};
 
-	/**
-	 * Overwrite the form function and bind the original form function to the execution
-	 */
+	//
+	// Overwrite the form function and bind the original form function to the execution
+	//
 	var old_form = $.fn.form;
 	$.fn.form = function(){
 		// trigger the old form
@@ -33,15 +35,18 @@
 			// Add the editor to textareas with type=html
 			$("textarea[type=html]", this).editor();
 		});
-	}
-	
+	};
+
+	//
+	// Loggin
+	//
 	function log(){
-		if (typeof(console) === 'undefined'||typeof(console.log) === 'undefined') return;
-		if (typeof console.log === 'function') {
-			console.log.apply(console, arguments); // FF, CHROME, Webkit
+		if (typeof(window.console) === 'undefined'||typeof(window.console.log) === 'undefined') return;
+		if (typeof window.console.log === 'function') {
+			window.console.log.apply(window.console, arguments); // FF, CHROME, Webkit
 		}
 		else{
-			console.log(Array.prototype.slice.call(arguments)); // IE
+			window.console.log(Array.prototype.slice.call(arguments)); // IE
 		}
 	}
 	
@@ -49,11 +54,11 @@
 	var toolbar = 'div.toolbar';
 
 	
-	/**
-	 * Get information about the selected text.
-	 * @param the scope/window object
-	 & @return selected element
-	 */
+	//
+	// Get information about the selected text.
+	// @param the scope/window object
+	// @return selected element
+	//
 	$.fn.selectedText = function(){
 	
 		var r;
@@ -62,9 +67,8 @@
 
 			var obj = null,
 				text = null,
-				sel = null;
-	
-			win = this;
+				sel = null,
+				win = this;
 		
 			// Get parent element to determine the formatting applied to the selected text
 			if(win.getSelection){
@@ -80,11 +84,16 @@
 					if(sel.focusNode.nodeName !== '#text'){
 						// Is selection spanning more than one node, then select the parent
 						if((sel.focusOffset - sel.anchorOffset)>1){
-							log("Selected spanning more than one",obj = sel.anchorNode);
-						}else if ( sel.anchorNode.childNodes[sel.anchorOffset].nodeName !== '#text' ){
-							log("Selected non-text",obj = sel.anchorNode.childNodes[sel.anchorOffset]);
+							obj = sel.anchorNode;
+						}else if ( sel.anchorNode.nodeName === '#text' ){
+							obj = sel.focusNode;
+						}
+						else if( sel.anchorNode.childNodes[sel.anchorOffset].nodeName !== '#text' ){
+							// selected whole child
+							obj = sel.anchorNode.childNodes[sel.anchorOffset];
 						}else{
-							log("Selected whole element",obj = sel.anchorNode);
+							// selected whole element
+							obj = sel.anchorNode;
 						}
 					}
 					// if we have selected text which does not touch the boundaries of an element
@@ -158,23 +167,21 @@
 		});
 		
 		return r;
-	}
+	};
 
 
 
 
-
-
-	/**
-	 * makeToolbar
-	 * Make toolbar with default settings
-	 * returns a toolbar object which can be injected into the DOM
-	 */
+	//
+	// makeToolbar
+	// Make toolbar with default settings
+	// returns a toolbar object which can be injected into the DOM
+	//
 	function makeToolbar(){
 
-		/**
-		 * The tools array
-		 */
+		//
+		// The tools array
+		//
 		var tools = [
 			{cmd:'editor', desc:'Switch between source and editor', label:'Source'},
 			' ',
@@ -188,7 +195,7 @@
 			{cmd:'insertimage', desc:'Insert file or image', label:'IMG'}, // &#9660;
 			' ',
 			{cmd:'insertorderedlist', desc:'Insert Numbered list', label:'<b>1</b> List'},
-			{cmd:'insertunorderedlist', desc:'Insert Bullet list', label:'&#9679; List'},		
+			{cmd:'insertunorderedlist', desc:'Insert Bullet list', label:'&#9679; List'},
 			' ',
 			{cmd:'justifyleft', desc:'Align Left', label:'<b>|</b>&#9668;'},
 			{cmd:'outdent', desc:'Outdent', label:'&#9668;'},
@@ -209,23 +216,23 @@
 				{value:'div', desc:'Normal Div', label:'Normal (Div)'}
 	//			{value:'acronym', desc:'Acronym', cmd:'inserthtml', prompt:'What is the ', label:'<acronym>Acronym</acronym>'}
 			]},
-			' ', 
+			' ',
 			{cmd:'inserthtml', desc:'Insert Special Character or Symbol', label:' Symbol', options : [
 				// CURRENCY
 				'$','&pound;','&euro;','&yen;',
 				// COPY
-				'&copy;', '&trade;', '&reg;', 
+				'&copy;', '&trade;', '&reg;',
 				// LATIN LOWERCASE
-				'&aacute;', '&acirc;', '&aelig;', '&agrave;','&aring;', '&atilde;', '&auml;', 
-				'&eacute;', '&ecirc;', '&egrave;', '&eth;', '&euml;', 
-				'&iacute;', '&icirc;', '&iexcl;', '&igrave;', '&iuml;', 
-				'&ntilde;', 
-				'&oacute;', '&ocirc;', '&oelig;', '&ograve;', '&otilde;', '&ouml;', 
+				'&aacute;', '&acirc;', '&aelig;', '&agrave;','&aring;', '&atilde;', '&auml;',
+				'&eacute;', '&ecirc;', '&egrave;', '&eth;', '&euml;',
+				'&iacute;', '&icirc;', '&iexcl;', '&igrave;', '&iuml;',
+				'&ntilde;',
+				'&oacute;', '&ocirc;', '&oelig;', '&ograve;', '&otilde;', '&ouml;',
 				'&szlig;',
-				'&uacute;', '&ucirc;', '&ugrave;','&uuml;', 
-				'&yacute;', '&yuml;', 
+				'&uacute;', '&ucirc;', '&ugrave;','&uuml;',
+				'&yacute;', '&yuml;',
 				// MATHS
-				'&frac12;', '&frac14;', '&frac34;', '&times;', '&divide;', '&lt;', '&gt;', '&deg;', 
+				'&frac12;', '&frac14;', '&frac34;', '&times;', '&divide;', '&lt;', '&gt;', '&deg;',
 				'&circ;', '&plusmn;', '&sum;', '&radic;', '&infin;', '&ne;', '&le;', '&ge;','&asymp;',
 				// Punctuation
 				'&hellip;', '&iquest;'
@@ -248,21 +255,21 @@
 		];
 
 
-		/**
-		 * Turn the tools array into a HTML string
-		 */
+		//
+		// Turn the tools array into a HTML string
+		//
 		function html(tool){
-			/**
-			 * Separator?
-			 * If the current tool is a string then insert as just a string
-			 */
+			//
+			// Separator?
+			// If the current tool is a string then insert as just a string
+			//
 			if(typeof tool == 'string'){
 				return "<span class='tool'>"+tool.replace(' ', '&nbsp;')+"</span>";
 			}
 			
-			/**
-			 * Create a dropdown list of options?
-			 */
+			//
+			// Create a dropdown list of options?
+			//
 			if(tool.options){
 				// initiate option array
 				var a = [];
@@ -278,20 +285,21 @@
 				return '<span>'+tool.label.replace(' ', '&nbsp;')+'</span><select data-cmd="'+ tool.cmd +'" title="'+tool.desc+'">' + a.join('') + '</select>';
 			}
 
-			/**
-			 * Else create a button 
-			 * This is the last option for what a tool can be. 
-			 */
+			//
+			// Else create a button
+			// This is the last option for what a tool can be.
+			//
 			return '<button data-cmd="'+tool.cmd+'" title="'+tool.desc+'">' + tool.label +'</button>';
 		}
 
 		//
 		//  Loop through tool object and create buttons for each
 		//
-		var r = '';
-		for(var i = 0; i<tools.length; i++ ){
+		var r = '',i;
+		for(i = 0; i<tools.length; i++ ){
 			r += html(tools[i]);
-		};
+		}
+
 		return r;
 	}
 
@@ -300,12 +308,12 @@
 
 
 
-	/**
-	 * executeCommand and insert into the page
-	 * @param string Command being executed,
-	 * @param string Value unique to the item
-	 * @param element Element which has been clicked
-	 */
+	//
+	// executeCommand and insert into the page
+	// @param string Command being executed,
+	// @param string Value unique to the item
+	// @param element Element which has been clicked
+	//
 	function executeCommand(cmd,value, el){
 
 		// make sure this is not going to insert outside the contentEditable iframe
@@ -328,18 +336,19 @@
 		}*/
 
 
-		/**
-		 * Get the selected Text if there is any. 
-		 * This function returns {obj:element,text:string}
-		 */
-		var sel = $(document).selectedText();
+		//
+		// Get the selected Text if there is any.
+		// This function returns {obj:element,text:string}
+		//
+		var sel = $(document).selectedText(),
+			src;
 
 
-		/**
-		 * If this is the createLink or insert image
-		 * Get the href|src value of the selected element
-		 * set this as the value
-		 */
+		//
+		// If this is the createLink or insert image
+		// Get the href|src value of the selected element
+		// set this as the value
+		//
 		if( (cmd==='insertimage'||cmd==='createlink') ){
 			if(sel.obj.tagName==='A'){
 				src = sel.obj.href;
@@ -353,18 +362,18 @@
 		// createlink
 		// inserts an anchor tag around the selected content.
 		// if there is no selected content we'll just prompt the user to add some text
-		// 
+		//
 		if(cmd==='createlink'){
 
 			// Is text selected?
 			// Is selected text a URL? Then prepopulate the content of the prompt
-			value = prompt('URL of a Link?', (sel.text.match('^https?://')?sel.text:'http://'));
+			value = window.prompt('URL of a Link?', (sel.text.match('^https?://')?sel.text:'http://'));
 	
 			//If the command is for a Link there must be text
 			// Otherwise we need to insertHTML instead
 			if(!sel.text.length){
 				// Get the text
-				if(!(sel.text = prompt("Text")))
+				if(!(sel.text = window.prompt("Text")))
 					sel.text = value;
 					
 				if(sel.text===null)
@@ -385,10 +394,10 @@
 		}
 
 		
-		// 
+		//
 		// Try inserting
 		// If the typical way doesn't work, lets try IE's
-		// 
+		//
 		try{
 			log([window, cmd, value]);
 			document.execCommand(cmd, false, value);
@@ -405,7 +414,7 @@
 			log("Could not execute "+cmd);
 		}
 		
-		// 
+		//
 		// Trigger a change event on the div
 		// This will be picked up and transfered to the Textarea
 		//
@@ -416,13 +425,128 @@
 		}
 
 		return false;
-	};
+	}
 
 
-	/**
-	 * Button[data-cmd] click
-	 * Add handler for when a command button is clicked
-	 */
+
+
+	//
+	// Load Image File
+	// Places an image into the current place on a page
+	// @param Blob File
+	//
+	function loadImageFile(file){
+		// Create image
+		var temp_dataURI = 'data:image/gif;base64,R0lGODlhEAAQAOUdAOvr69HR0cHBwby8vOzs7PHx8ff397W1tbOzs+Xl5ebm5vDw8PPz88PDw7e3t+3t7dvb2+7u7vX19eTk5OPj4+rq6tbW1unp6bu7u+fn5+jo6N/f3+/v7/7+/ra2ttXV1f39/fz8/Li4uMXFxfb29vLy8vr6+sLCwtPT0/j4+PT09MDAwL+/v7m5ubS0tM7OzsrKytra2tTU1MfHx+Li4tDQ0M/Pz9nZ2b6+vgAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFMAA5ACwAAAAAEAAQAAAGg8CcMAcICAY5QsEwHBYPCMQhl6guGM5GNOqgVhMPbA6y5Xq/kZwkN3Fsu98EJcdYKCo5i7kKwCorVRd4GAg5GVgAfBpxaRtsZwkaiwpfD0NxkYl8QngARF8AdhmeDwl4pngUCQsVHDl2m2iveDkXcZ6YTgS3kAS0RKWxVQ+/TqydrE1BACH5BAkwADkALAAAAAAQABAAAAZ+wJwwJ1kQIgNBgDMcdh6KRILgQSAOn46TIJVSrdZGSMjpeqtgREAoYWi6BFF6xCAJS6ZyYhEIUwxNQgYkFxwBByh2gU0kKRVHi4sgOQuRTRJtJgwSBJElihwMQioqGmw5gEMLKk2AEkSBq4ElQmNNoYG2OVpDuE6Lrzmfp0NBACH5BAUwADkALAAAAAAQABAAAAaFwJwwJ1kQCDlCwTAcMh6KhDQnVSwYTkJ1un1gc5wtdxsh5iqaLbVKyVEWigq4ugZgTyiA9CK/JHIZWCsICCxpVWV/EzkHhAgth1UPQ4OOLXpScmebFA6ELHAZclBycXIULi8VZXCZawplFG05flWlakIVWravCgSaZ1CuksBDFQsAcsfFQQAh+QQJMAA5ACwAAAAAEAAQAAAGQcCccEgsGo/IpHLJzDGaOcKCCUgkAEuFNaFRbq1dJCxX2WKRCFdMmJiiEQjRp1BJwu8y5R3RWNsRBx9+SSsxgzlBACH5BAkwADkALAAAAAAQABAAAAaJwJwwJ1kQCDlCwTAcMh6KhDQnVSwYTkJ1un1gc5wtdxsh5iqaLbVKyTEWigq4ugZglRXpRX5J5DJYAFIAaVVlfhNrURqFVQ9DYhqCgzkzCGdnVQBwGRU0LQiXCRUAORQJCwAcOTChoYplBXIKLq6vUXRCCQ22olUEcroJB66KD8FNCjUrlxWpTUEAIfkEBTAAOQAsAAAAABAAEAAABobAnDAnWRAIOULBMBwyHoqENCdVLBhOQnW6fWBznC13G8nZchXNllql5Bg2xA1cZQOwShwCMdDkLgk5GVgAUgAie3syVDkTbFIaiIkIJ0NiGnp7HiNonRVVAHEuFjlQFVQVAI0JCzYjrKCPZQWnf1unYkMVWrFbBLVoUIaPD8C6CwCnAMhNQQA7',
+			failed_dataURI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAADAUlEQVQ4jY2UTWxUVRiGn3PvnR/m//cW2iEzTC8jtE1tIbQFHKHOaBMWMG2wwUYxMSYEorWEyMIFhrjThZKIIdFEbWKirIw7V4bEEE10UROsDIptgm7GnylVOvbOvZ+LQSPITPiS72zOc5685+Scg4jQrgFjZGTkacuyHu/EiQgGHcqyrF3ZbPqEptlrsVjs63q9fr0t3CFN/OjRyRtffDkvb51/QUrF4iVAb8u3myiXH3ll/r2zIu5XIu5FmTk8IKOje55qx2v3SmmaplV4oGdu3/gu3p0/z8effMTx2TE8WvOsUip231ubmjrw4eeX35T3PzgpoEk47JXF747JmdMPysTExBv3lSifzz+8zeqe3juWw+u9gUclKBQyePUGs6cKrDUWj2UymcLd6+4QKaWMoaH+1584slPBNxR6m/j9QiAYJBKuk0zBocmo38r1v9xRNF566MTuYn7HwJCAfEt3WhGN6oRiNomEDfIHzz6TxR+4OjM4OFi+pygSiaS2ZFNnjkwPg3wPrJNMGSTjOpvSDTTdAcchEnQ4PruR2Ib0OdMMbfyfqFjcd6q0P5fc3P0DTZYBG8N7iy7TpifhARQoBbgcOpAgX1jsG+gbm7lDZJrmVisfev5gpRvkCobbAPcvFE3mXrKYfHITICC3G2HudC/2rdpzSqn4v6LintFXKwezwVDwR0QaLVhzqNfXufDaEm+f+wmnqRCNVjIXhvpT7C/d3FKpHL4AoBUKfY8OD3sr46UGsIRSAroDgN1UrKyaROKb0XVQmmqJNAHWOPniVn6rX5mytls7jZ6urtLvK1VW/2wi7jrKVYgSQOHz67xzMY03IKys2oiAchUoAT/cbAgr9SVjW2+5rCzL2hGLez/1+X5N+ZQPgwB4bMRtnYXHABGFI+qft9AaFfxSc4iFepery1cfUyJCLpfbPrp397TH5wkbGDgizbsv3H9LHMcNB6PRa9cWLy8sLHxWq9V+Vre/DJLJZCYQCGwAxLZtp5NIKSWRSCRarVavi8gqwN+3R5ghnBdykAAAAABJRU5ErkJggg==";
+
+		// Put temp on page
+		executeCommand('insertimage',temp_dataURI);
+				
+		// get position
+		var sel = $(window).selectedText();
+		
+		// render
+		var reader = new FileReader();
+
+		reader.onload = function(){
+
+			var img = new Image(),
+				canvas = document.createElement("canvas"),
+				ctx = canvas.getContext("2d"),
+				maxWidth = 1000,
+				maxHeight = 1000;
+
+
+			img.onload = function(e){
+				var ratio = 1;
+				
+				if(img.width > maxWidth){
+					ratio = maxWidth / img.width;
+				}
+				if(img.height > maxHeight){
+					ratio = Math.min(maxHeight / img.height, ratio);
+				}
+				
+				canvas.width = img.width * ratio;
+				canvas.height = img.height * ratio;
+				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+				
+				// insert this into the current document as an image
+				var canvasDataURL = canvas.toDataURL();
+				log("CANVAS LENGTH" + canvas.toDataURL().length );
+				
+				// Replace the temp image
+				$(sel.obj).find("img").filter(function(){
+					return $(this).attr('src') === temp_dataURI;
+				}).eq(0).attr('src', canvasDataURL.length < reader.result.length? canvasDataURL : reader.result );
+				
+				// insert image
+				// This has been replace with replace temp
+				//executeCommand("insertimage", canvasDataURL.length < reader.result.length? canvasDataURL : reader.result  );
+	
+			};
+			img.onerror = function(e){
+				// Replace the temp image
+				$(sel.obj).find("img").filter(function(){
+					return $(this).attr('src') === temp_dataURI;
+				}).eq(0).attr({ src: failed_dataURI, title : 'Failed to insert image'});
+			};
+
+			img.src = reader.result;
+			//log("IMG LENGTH "+reader.result.length);
+
+		};
+		reader.readAsDataURL(file);
+	}
+
+	
+	//
+	// Insert images if they are passed as a dataTransfer array.
+	// This is used for body[ondrop]() and input[type=file][onchange]() as well as document[onpaste]
+	// Images are reduced to a smaller size
+	//
+	// @param e event aka from clipboardData and dataTransfer, or <input type=file> element with "files" as an attribute
+	// @returns true (works), false(failed)
+	//
+	function insertimage(e){
+	
+		var i;
+		if(!("FileReader" in window)){
+			return false;
+		}
+	
+	//	log(JSON.stringify(e));
+	
+		if(e.files&&e.files.length){
+			for(i=0;i<e.files.length;i++){
+				loadImageFile(e.files[i]);
+			}
+		}
+		else if(e.items&&e.items.length){
+			// pasted image
+			for(i=0;i<e.items.length;i++){
+				if( e.items[i].kind==='file' && e.items[i].type.match(/^image/) ){
+					loadImageFile(e.items[i].getAsFile());
+				}
+				else if (e.items[i].kind==='string'){
+					// if clipboard data contains string we're just going to paste it as HTML. Its too much hassle sorting it out
+					return false;
+				}
+			}
+		}
+		else{
+			return false;
+		}
+	
+		return true;
+	}
+
+
+	//
+	// Button[data-cmd] click
+	// Add handler for when a command button is clicked
+	//
 	$("button[data-cmd]").live('click', function(e){
 
 		// ... i.e. dont want to submit a form, if that's where the button was.
@@ -448,7 +572,7 @@
 		}
 
 		//
-		// cmd is short for the command (or action) which we are applying to our 
+		// cmd is short for the command (or action) which we are applying to our
 		//
 		var cmd = $(this).attr('data-cmd');
 
@@ -457,52 +581,66 @@
 		//
 		if(cmd === 'editor'){
 
-			// get the selected editor area
-			var sel = $(window).selectedText(),
-				$sel = $();
+			// Get the controls
+			var $matches = $(this).parents(toolbar).nextAll('[contenteditable]:lt(1),textarea[type=html]:lt(1)');
 
-			if(!sel){
-				//
-				// Lets try and guess which editor we're referring too.
-				// 
-				var $sel = $(this).parents('div.toolbar').next('textarea');
-				
-				if( !$sel.is(':visible') ){
-					$sel = $sel.next('[contenteditable]:visible');
-				}
-				
-				if($sel.length===0){
-					log("can't find an element to switch");
-					return false;
-				}
+			if($matches.length===2){
+				// toggle show hide the sources
+				// Unfortunatly toggle hides + shows which leads to jerky page navigation
+				//$matches.toggle().filter('textarea:visible');
+
+				// Get the visible elements
+				var $vis = $matches.filter(':visible');
+				$matches.show().filter($vis).hide();
 			}
 			else{
-				$sel = $(sel.obj);
+
+				// get the selected editor area
+				var sel = $(window).selectedText(),
+					$sel = $(),
+					q = '[contenteditable]';
+
+				if(!sel){
+					//
+					// Lets try and guess which editor we're referring too.
+					//
+					$sel = $(this).parents('div.toolbar').next('textarea');
+					
+					if( !$sel.is(':visible') ){
+						$sel = $sel.next('[contenteditable]:visible');
+					}
+					
+					if($sel.length===0){
+						log("can't find an element to switch");
+						return false;
+					}
+				}
+				else{
+					$sel = $(sel.obj);
+				}
+
+				// Is textarea view
+				if( $sel.is('textarea[type=html]') ){
+					// find the neighbouring div.contenteditable
+					$sel.hide().next(q).show();
+				}
+				else {
+					( $sel.is(q) ? $sel : $sel.parents(q) ).hide().prev('textarea').show().focus();
+				}
+				
 			}
 
-			var q = '[contenteditable]';
-
-			// Is textarea view
-			if( $sel.is('textarea[type=html]') ){
-				// find the neighbouring div.contenteditable
-				$sel.hide().next(q).show();
-			}
-			else {
-				( $sel.is(q) ? $sel : $sel.parents(q) ).hide().prev('textarea').show().focus();
-			}
-			
 			// this command does not require executing
 			return;
-
 
 		//
 		// InsertImage
 		// If the user has clicked the insert image command, lets pop a file dialogue
-		// 
+		//
 		} else if(cmd==='insertimage'){
 	
 			// Reuse an exiting one if not already available
-			var $fileType = $(this).siblings("input[type=file]").filter(function(){return $(this).val()===""});
+			var $fileType = $(this).siblings("input[type=file]").filter(function(){return $(this).val()==="";});
 	
 			// Add a new one
 			if($fileType.length === 0){
@@ -523,12 +661,12 @@
 			return false;
 		}
 
-		// 
+		//
 		// Highlight the tool
-		// 
+		//
 		$(this).toggleClass('selected');
 
-		// 
+		//
 		// Trigger edit command
 		// Send the command to the insert function for updating the document
 		//
@@ -536,7 +674,7 @@
 			executeCommand( cmd, null, this );
 		}
 		catch(e){
-			log("Uncaught error applying insert",e);	
+			log("Uncaught error applying insert",e);
 		}
 		return false;
 
@@ -548,17 +686,17 @@
 			executeCommand($(this).attr('data-cmd'), this.options[this.selectedIndex].value);
 		}
 		catch(err){
-			log("Uncaught error applying insert",err);	
+			log("Uncaught error applying insert",err);
 		}
 	});
 
 
-	/**
-	 * commandList
-	 * When nodes are selected in the WYSIWYG the values in this list are used to determine the command's which have already been applied to the selected node.
-	 */
+	//
+	// commandList
+	// When nodes are selected in the WYSIWYG the values in this list are used to determine the command's which have already been applied to the selected node.
+	//
 	var commandList = {
-		bold 		: {css:{'fontWeight':'bold'}, tag:'B|STRONG'},
+		bold		: {css:{'fontWeight':'bold'}, tag:'B|STRONG'},
 		italic		: {css:{'fontStyle':'italic'},tag:'I|EM'},
 		underline	: {css:{'textDecoration':'underline'},tag:'U'},
 		strikethrough : {css:{'textDecoration':'line-through'},tag:'STRIKE'},
@@ -575,9 +713,9 @@
 	};
 	
 
-	/**
-	 * Create EDITOR on the currently selected TEXTAREA
-	 */
+	//
+	// Create EDITOR on the currently selected TEXTAREA
+	//
 	$.fn.editor = function(){
 	
 		var query = 'textarea[type=html], [contenteditable=true]';
@@ -586,28 +724,33 @@
 
 			//
 			// Lets get the $div WYSIWYG node - If that's the case!
-			// 
-			var $div = $(this);
+			//
+			var $div = $(this),
+				width = $(this).outerWidth(),
+				height = $(this).outerHeight();
 			
 			//
 			// If however this is a textarea, lets create our div WYSIWYG node
-			// 
+			//
 			if($(this).is('textarea')){
 			
-				// Duplicate any styles
-				var style = $(this).attr('style');
-				
-				// Hide
-				var $txt = $(this).addClass("source").hide();
-
 				// lets create a editable region
 				$div = $.make('div[contenteditable=true]')
-							.width($(this).width())
-							.height($(this).height())
-							.attr('style', style)
-							.html($(this).html())
+							.width(width)
+							.height(height)
+							.attr('style', $(this).attr('style')||'')
+							.html($(this).html()||'')
 							.insertAfter(this);
 				
+				// Hide
+				var $txt = $(this).addClass("source");
+
+				// update the width incase adding a class factors on it.
+				width = $(this).outerWidth();
+
+				// hide the original textarea
+				$txt.hide();
+
 				// add change events to textarea
 				$(this).add($div).bind('change', function(){
 					// check this is visible
@@ -618,25 +761,25 @@
 						}else{
 							$txt.val($div.html());
 						}
-					}		
+					}
 				});
 			}
 
-			// 
+			//
 			// Lets get a reference to the element containg all the controls
-			// 
+			//
 			var $controls = $( $(this).attr('data-controls') || '' );
 			
 			// Add the toolbar if a reference to an existing toolbar has not been defined by the control attribute
 			if( $controls.length === 0 ){
 				// ADD controls.
-				$controls = $.make(toolbar).html(makeToolbar()).width($(this).width()).insertBefore(this);
+				$controls = $.make(toolbar).html(makeToolbar()).width(width).insertBefore(this);
 			}
 			
-			// 
+			//
 			// Bind events to the $div
 			// Update the $controls with the item selected
-			// 
+			//
 			$div.addClass('editor').bind('click keyup blur', function(e){
 				
 				if(e.type!=='click'){
@@ -657,7 +800,7 @@
 				// Formatting of some tags, i.e b,i,u, can be overridden by styles
 				// And can also be inferred by tagNames.
 			
-				var c = {}; // commands, these are 
+				var c = {}; // commands, these are
 				var getattr = function(){
 					if(!this.tagName)
 						return;
@@ -671,18 +814,14 @@
 					for(x in commandList){
 						if(c[x]) continue;
 						for( y in commandList[x].css ){
-							if( this.style[y] 
-								&& ( this.style[y].match( commandList[x].css[y], 'i' ) 
-									|| ( commandList[x].css[y] === null && this.style[y].length > 0 ) ) ){
+							if( this.style[y] && ( this.style[y].match( commandList[x].css[y], 'i' ) || ( commandList[x].css[y] === null && this.style[y].length > 0 ) ) ){
 								c[x] = this.style[y];
 								continue;
 							}
 						}
 						if($.browser.msie)
 							for( y in commandList[x].attr ){
-								if( this.getAttribute 
-									&& ( this.getAttribute(y) === commandList[x].attr[y] 
-										|| ( commandList[x].attr[y] === null && this.getAttribute(y).length > 0 ) ) ){
+								if( this.getAttribute  && ( this.getAttribute(y) === commandList[x].attr[y] || ( commandList[x].attr[y] === null && this.getAttribute(y).length > 0 ) ) ){
 									c[x] = this.getAttribute(y);
 									continue;
 								}
@@ -700,20 +839,24 @@
 			
 				$controls.find(':input[data-cmd]').each(function(){
 					var cmd = $(this).attr('data-cmd');
-					var bool = !(typeof c[cmd] === 'undefined');
+					var bool = (typeof c[cmd] === 'undefined');
 					
 					if(this.tagName === 'BUTTON'){
-						if(bool)
+						if(!bool){
 							$(this).addClass('selected');
-						else
+						}
+						else{
 							$(this).removeClass('selected');
-					};
+						}
+					}
 					if(this.tagName === 'SELECT'){
-						if(bool)
+						if(!bool){
 							this.value = c[cmd];
-						else 
+						}
+						else{
 							this.selectedIndex = -1;
-					};
+						}
+					}
 				});
 			
 				//console.log(c,obj,$(obj).parents());
@@ -721,12 +864,12 @@
 				// Record the last selected position in the Iframe
 				try{
 					var s = document.selection.createRange().duplicate().getBoundingClientRect();
-					window.posx = s.left; 
-					window.posy = s.top; 
+					window.posx = s.left;
+					window.posy = s.top;
 				}
 				catch(e){}
 
-			// 
+			//
 			// Bind dragdrop events to the $div
 			// When the user drops a file over we load it in.
 			//
@@ -734,129 +877,66 @@
 
 				// get the original event
 				e = (e&&e.originalEvent?e.originalEvent:window.event) || e;
-				
+
+
 				// prevent default, which is typically loading the file into a new window (urgh nasty results)
 				if(e.preventDefault){
 					e.preventDefault();
 				}
 				insertimage(e.files?e:e.dataTransfer);
 				return false;
+			
 			});
 		});
 	};
 	
+	
+	//
+	// Drag items around within the editable area
+	// This is a little sketchy
+	// Add drag for elements in the page
+	$('.editor[contenteditable]').live("drag", function(e){
+		if(e.target === this){
+			return false;
+		}
+		if("target" in e && "elementFromPoint" in document){
+			var landing = document.elementFromPoint( e.originalEvent.clientX, e.originalEvent.clientY ) ;
+			
+			// Check that this is an appropriate landing location
+			if( $(landing).filter(function(){
+					return $(this).filter('[contenteditable]').length || $(this).parents('[contenteditable]').length;
+				}).length && landing !== e.target ){
+
+				log('landing', e.target, landing);
+
+				// Can this exist here
+				if(e.target.tagName.toLowerCase() === 'li' &&
+					'li,ul'.split('.').indexOf(landing.tagName.toLowerCase() ) === -1 ){
+					
+					// find the parent li element where this may exist
+					
+				}
+
+				// Is this item allowed to land here?
+				if( ( e.target.tagName.toLowerCase() === landing.tagName.toLowerCase() && 'p,li'.split(',').indexOf(landing.tagName.toLowerCase()) > -1 ) || landing.tagName.toLowerCase() === 'img' ) {
+					$(e.target).detach().insertBefore( landing );
+				}
+				else{
+					$(e.target).detach().prependTo( landing );
+				}
+			}
+		}
+	});
 
 
-
-	/** 
-	 * paste
-	 * Grab stuff from the clipboard and insert it into the page.
-	 * This works naturally with text into contentEditable areas, but we want to be able to also paste images
-	 */ 
+	//
+	// paste
+	// Grab stuff from the clipboard and insert it into the page.
+	// This works naturally with text into contentEditable areas, but we want to be able to also paste images
+	//
 	document.onpaste = function(e){
 		return !insertimage(e.clipboardData);
-	}
+	};
 
 
-
-
-	
-	/**
-	 * Insert images if they are passed as a dataTransfer array.
-	 * This is used for body[ondrop]() and input[type=file][onchange]() as well as document[onpaste]
-	 * Images are reduced to a smaller size
-	 *
-	 * @param e event aka from clipboardData and dataTransfer, or <input type=file> element with "files" as an attribute 
-	 * @returns true (works), false(failed)
-	 */
-	function insertimage(e){
-	
-		if(!("FileReader" in window)){
-			return false;
-		}
-	
-	//	log(JSON.stringify(e));
-	
-		if(e.files&&e.files.length){
-			for(var i=0;i<e.files.length;i++){
-				file(e.files[i]);
-			}
-		}
-		else if(e.items&&e.items.length){
-			// pasted image
-			for(var i=0;i<e.items.length;i++){
-				if( e.items[i].kind==='file' && e.items[i].type.match(/^image/) ){
-					var files;
-					file(e.items[i].getAsFile());
-				}
-				else if (e.items[i].kind==='string'){
-					// if clipboard data contains string we're just going to paste it as HTML. Its too much hassle sorting it out
-					return false;
-				}
-			}
-		}
-		else{
-			return false;
-		}
-	
-		return true;
-		
-		function file(file){
-			// Create image
-			var temp = 'data:image/gif;base64,R0lGODlhEAAQAOUdAOvr69HR0cHBwby8vOzs7PHx8ff397W1tbOzs+Xl5ebm5vDw8PPz88PDw7e3t+3t7dvb2+7u7vX19eTk5OPj4+rq6tbW1unp6bu7u+fn5+jo6N/f3+/v7/7+/ra2ttXV1f39/fz8/Li4uMXFxfb29vLy8vr6+sLCwtPT0/j4+PT09MDAwL+/v7m5ubS0tM7OzsrKytra2tTU1MfHx+Li4tDQ0M/Pz9nZ2b6+vgAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFMAA5ACwAAAAAEAAQAAAGg8CcMAcICAY5QsEwHBYPCMQhl6guGM5GNOqgVhMPbA6y5Xq/kZwkN3Fsu98EJcdYKCo5i7kKwCorVRd4GAg5GVgAfBpxaRtsZwkaiwpfD0NxkYl8QngARF8AdhmeDwl4pngUCQsVHDl2m2iveDkXcZ6YTgS3kAS0RKWxVQ+/TqydrE1BACH5BAkwADkALAAAAAAQABAAAAZ+wJwwJ1kQIgNBgDMcdh6KRILgQSAOn46TIJVSrdZGSMjpeqtgREAoYWi6BFF6xCAJS6ZyYhEIUwxNQgYkFxwBByh2gU0kKRVHi4sgOQuRTRJtJgwSBJElihwMQioqGmw5gEMLKk2AEkSBq4ElQmNNoYG2OVpDuE6Lrzmfp0NBACH5BAUwADkALAAAAAAQABAAAAaFwJwwJ1kQCDlCwTAcMh6KhDQnVSwYTkJ1un1gc5wtdxsh5iqaLbVKyVEWigq4ugZgTyiA9CK/JHIZWCsICCxpVWV/EzkHhAgth1UPQ4OOLXpScmebFA6ELHAZclBycXIULi8VZXCZawplFG05flWlakIVWravCgSaZ1CuksBDFQsAcsfFQQAh+QQJMAA5ACwAAAAAEAAQAAAGQcCccEgsGo/IpHLJzDGaOcKCCUgkAEuFNaFRbq1dJCxX2WKRCFdMmJiiEQjRp1BJwu8y5R3RWNsRBx9+SSsxgzlBACH5BAkwADkALAAAAAAQABAAAAaJwJwwJ1kQCDlCwTAcMh6KhDQnVSwYTkJ1un1gc5wtdxsh5iqaLbVKyTEWigq4ugZglRXpRX5J5DJYAFIAaVVlfhNrURqFVQ9DYhqCgzkzCGdnVQBwGRU0LQiXCRUAORQJCwAcOTChoYplBXIKLq6vUXRCCQ22olUEcroJB66KD8FNCjUrlxWpTUEAIfkEBTAAOQAsAAAAABAAEAAABobAnDAnWRAIOULBMBwyHoqENCdVLBhOQnW6fWBznC13G8nZchXNllql5Bg2xA1cZQOwShwCMdDkLgk5GVgAUgAie3syVDkTbFIaiIkIJ0NiGnp7HiNonRVVAHEuFjlQFVQVAI0JCzYjrKCPZQWnf1unYkMVWrFbBLVoUIaPD8C6CwCnAMhNQQA7';
-	
-			executeCommand('insertimage',temp);
-	
-					
-			// get position
-			var sel = $(window).selectedText();
-			
-			// render
-			var reader = new FileReader();
-	
-			reader.onload = function(){
-	
-			    var img = new Image(),
-			    	canvas = document.createElement("canvas"),
-			    	ctx = canvas.getContext("2d"),
-			    	maxWidth = maxHeight = 1000;
-		
-				
-			    img.onload = function()
-			    {
-					var ratio = 1;
-					
-					if(img.width > maxWidth){
-						ratio = maxWidth / img.width;
-					}
-					if(img.height > maxHeight){
-						ratio = Math.min(maxHeight / img.height, ratio);
-					}
-					
-					canvas.width = img.width * ratio;
-					canvas.height = img.height * ratio;
-					ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-					
-					// insert this into the current document as an image 
-					var canvasDataURL = canvas.toDataURL();
-					log("CANVAS LENGTH" + canvas.toDataURL().length );
-					
-					// Replace temp
-					$(sel.obj).find("img").filter(function(){
-						return $(this).attr('src') === temp;
-					}).eq(0).attr('src', canvasDataURL.length < reader.result.length? canvasDataURL : reader.result );
-					
-					// insert image
-					//executeCommand("insertimage", canvasDataURL.length < reader.result.length? canvasDataURL : reader.result  );
-		
-			    };
-			
-			    img.src = reader.result;
-			    log("IMG LENGTH "+reader.result.length);
-			    
-			};
-			reader.readAsDataURL(file);
-		}
-	}
-	
 })(jQuery);
