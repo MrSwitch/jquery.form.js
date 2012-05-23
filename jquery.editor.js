@@ -365,19 +365,27 @@
 		//
 		if(cmd==='createlink'){
 
+			var link = (sel.obj && "tagName" in sel.obj && sel.obj.tagName.toUpperCase() === 'A') ? sel.obj.href : (sel.text.match('^https?://')?sel.text:'http://');
+
 			// Is text selected?
 			// Is selected text a URL? Then prepopulate the content of the prompt
-			value = window.prompt('URL of a Link?', (sel.text.match('^https?://')?sel.text:'http://'));
+			value = window.prompt('URL of a Link?', link );
 	
+			if( !value ){
+				// user cancelled
+				return;
+			}
 			//If the command is for a Link there must be text
 			// Otherwise we need to insertHTML instead
-			if(!sel.text.length){
+			else if( !sel.text.length){
 				// Get the text
-				if(!(sel.text = window.prompt("Text")))
+				if(!(sel.text = window.prompt("What is the text you'd like to display on the link?"))){
 					sel.text = value;
+				}
 					
-				if(sel.text===null)
+				if(sel.text===null){
 					return false;
+				}
 				// We are going to insert the element manually
 				// Using pasteHTML IE and execCommand insertHTML if the browser supports it.
 				value = "<a href='"+value+"'>"+sel.text+"</a>";
@@ -460,7 +468,7 @@
 
 			img.onload = function(e){
 				var ratio = 1;
-				
+
 				if(img.width > maxWidth){
 					ratio = maxWidth / img.width;
 				}
@@ -745,10 +753,10 @@
 				// Hide
 				var $txt = $(this).addClass("source");
 
-				// update the width incase adding a class factors on it.
+				// update the width, assuming the append className operation above changed it.
 				width = $(this).outerWidth();
 
-				// hide the original textarea
+				// hide the original textarea, as we are going to show the original
 				$txt.hide();
 
 				// add change events to textarea
