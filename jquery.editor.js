@@ -183,26 +183,27 @@
 		// The tools array
 		//
 		var tools = [
-			{cmd:'editor', desc:'Switch between source and editor', label:'Source'},
+			{cmd:'editor', desc:'Switch between source and editor', label:'&#x25c7;', toggle:'&#x270e;'},
 			' ',
 			{cmd:'bold', desc:'Make the Selected text bold', label:'<b>B</b>'},
 			{cmd:'italic', desc:'Make the Selected text Italic', label:'<i>I</i>'},
 			{cmd:'underline', desc:'Underline the selected text', label:'<u>U</u>'},
 			{cmd:'strikethrough',desc:'Strike through the selected text', label:'<strike>S</strike>'},
 			' ',
-			{cmd:'createlink', desc:'Create Link', label:'<u>URL</u>'},
+			{cmd:'createlink', desc:'Create Link', label:'&#x26ad;'},
 	//		{cmd:'insertimage', desc:'Insert image', label:'<u>IMG</u>',prompt:'URL of an image?'}, // &#9660;
-			{cmd:'insertimage', desc:'Insert file or image', label:'IMG'}, // &#9660;
+			{cmd:'insertimage', desc:'Insert file or image', label:'&#x2b15;'}, // &#9660;
 			' ',
-			{cmd:'insertorderedlist', desc:'Insert Numbered list', label:'<b>1</b> List'},
-			{cmd:'insertunorderedlist', desc:'Insert Bullet list', label:'&#9679; List'},
+			{cmd:'insertorderedlist', desc:'Insert Numbered list', label:'&#x2631;'},
+			{cmd:'insertunorderedlist', desc:'Insert Bullet list', label:'&#x25a4;'},
 			' ',
-			{cmd:'justifyleft', desc:'Align Left', label:'<b>|</b>&#9668;'},
-			{cmd:'outdent', desc:'Outdent', label:'&#9668;'},
-			{cmd:'justifycenter', desc:'Align center', label:'&#9679;'},
-			{cmd:'indent', desc:'Indent', label:'&#9658;'},
-			{cmd:'justifyright', desc:'Align right', label:'&#9658;<b>|</b>'},
-			{cmd:'justifyfull', desc:'Jusitfy', label:'&#9776;'},//8801
+			{cmd:'indent', desc:'Indent', label:'&#x25bb;'},
+			{cmd:'outdent', desc:'Outdent', label:'&#x25c5;'},
+			' ',
+			{cmd:'justifyleft', desc:'Align Left', label:'&#x25f0;'},
+			{cmd:'justifycenter', desc:'Align center', label:'&#x2637;'},
+			{cmd:'justifyright', desc:'Align right', label:'&#x25f3;'},
+			{cmd:'justifyfull', desc:'Jusitfy', label:'&#x2630;'},//8801
 			' ',
 			{label:' Format', cmd:'formatblock', desc:'Format selected text', options:[
 				{value:'p', desc:'Normal', label:'Normal'},
@@ -274,6 +275,8 @@
 				// initiate option array
 				var a = [];
 
+				a.push('<option value="" disabled selected style="display:none;">'+tool.label.replace(' ', '&nbsp;')+'</option>');
+
 				// build select tag
 				for(var y in tool.options){if(tool.options.hasOwnProperty(y)){
 					var o = tool.options[y];
@@ -282,14 +285,14 @@
 					}
 					a.push('<option value="'+o.value+'">'+o.label+'</option>');
 				}}
-				return '<span>'+tool.label.replace(' ', '&nbsp;')+'</span><select data-cmd="'+ tool.cmd +'" title="'+tool.desc+'">' + a.join('') + '</select>';
+				return '<select data-cmd="'+ tool.cmd +'" title="'+tool.desc+'">' + a.join('') + '</select>';
 			}
 
 			//
 			// Else create a button
 			// This is the last option for what a tool can be.
 			//
-			return '<button data-cmd="'+tool.cmd+'" title="'+tool.desc+'">' + tool.label +'</button>';
+			return '<button data-cmd="'+tool.cmd+'" title="'+tool.desc+'" '+ (tool.toggle ? 'data-toggle="'+tool.toggle+'" data-label="'+tool.label+'"' : '') +'>' + tool.label +'</button>';
 		}
 
 		//
@@ -589,6 +592,15 @@
 		//
 		if(cmd === 'editor'){
 
+			// Toggle
+			$(this).toggleClass('selected').each(function(){
+				// Disable other buttons
+				$(this).siblings('button,select').attr('disabled', $(this).is('.selected') ? 'disabled' : false);
+			}).filter('[data-toggle]').each(function(){
+				$(this).html( $(this).is('.selected') ? $(this).attr('data-toggle') : $(this).attr('data-label') );
+			});
+
+
 			// Get the controls
 			var $matches = $(this).parents(toolbar).nextAll('[contenteditable]:lt(1),textarea[type=html]:lt(1)');
 
@@ -862,7 +874,7 @@
 							this.value = c[cmd];
 						}
 						else{
-							this.selectedIndex = -1;
+							this.selectedIndex = 0;
 						}
 					}
 				});
