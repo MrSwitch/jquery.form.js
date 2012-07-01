@@ -575,7 +575,7 @@
 
 				// FF bug
 				if(!e.offsetX){
-					e.offsetX = e.clientX - e.target.offsetLeft;
+					e.offsetX = e.clientX - $(this).offset().left;
 				}
 
 				var w = $(this).width(),

@@ -71,10 +71,6 @@ form{
    		color:#bbb;
 	}
 
-   	input:after{
-   		content:attr( placeholder );
-	}
-
 /*************************
  * type.range
  *************************/
