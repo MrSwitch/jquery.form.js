@@ -272,12 +272,9 @@
 			// $list
 			var $list = $(this).nextUntil(":input").filter("div.datalist").eq(0);
 			if($list.length===0){
-				$list = $("<div class='datalist'></div>").insertAfter(this);
-				$list.css({
-					position: 'absolute',
-					top:$(this).offset().top+$(this).outerHeight(),
-					left:$(this).offset().left
-				});
+				$list = $("<div class='datalist'></div>").css({
+					position: 'absolute'
+				}).insertAfter(this);
 			}
 
 			// dont change the list?
