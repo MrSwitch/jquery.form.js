@@ -8,8 +8,12 @@
 	"use strict";
 
 	// test for support
+	$.support.datalist = (function(){
+		// El.list is available
+		var el = document.createElement('input');
+		return typeof el.list !== 'undefined';
+	})();
 	$.support.placeholder = test('input[placeholder=wicked]');
-	$.support.datalist = test('input[list=hello]');
 	$.support.range = test('input[type=range]');
 	$.support.number = test('input[type=number]');
 	$.support.date = test('input[type=date]');
@@ -24,6 +28,7 @@
 
 			if(m[3]&&m[5]){
 				test[m[3]] = m[5];
+				//console.log(test[m[3]] +':'+ m[5]);
 				return test[m[3]] === m[5];
 			}
 			else if(m[3]){
@@ -35,14 +40,6 @@
 		}
 		return true;
 	}
-
-
-	// local root
-    var path = (function (){
-        var s = document.getElementsByTagName('script'),
-        p = s[s.length-1];
-        return (p.src?p.src:p.getAttribute('src')).match(/(.*\/)/)[0] || "";
-	})();
 
 
 	/**
