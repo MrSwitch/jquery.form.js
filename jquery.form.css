@@ -209,3 +209,6 @@ input.datalist + div.datalist{
 			text-decoration:underline;
 			background-color:#efefef;
 		}
+datalist select{
+	display:none;
+}
