@@ -69,6 +69,12 @@ form iframe.source
         color:#dddddd;
     }
 
+    /** icomoon fonts aren't available for these*/
+    .toolbar button b, 
+    .toolbar button i, 
+    .toolbar button strike {
+        font-family: verdana;
+    }
 
 /**
  * IcoMoon is awesome, check these out below
