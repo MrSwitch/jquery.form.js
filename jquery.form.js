@@ -80,7 +80,7 @@
 			};
 
 		// REQUIRED ATTRIBUTES
-		var type  = $el.attr('type'),
+		var type  = $el.attr('data-type') || $el.attr('type'),
 			min = $el.attr('min'),
 			max = $el.attr('max'),
 			step = $el.attr('step'),
@@ -242,16 +242,16 @@
 		$(':input.placeholder[placeholder]', 'form').live('focus', function(e){
 			var method = (this.tagName==='INPUT'?'val':'text');
 			
-			if($(this)[method]()===$(this).attr('placeholder')){
+			if($(this)[method]()===($(this).attr('data-placeholder')||$(this).attr('placeholder'))){
 				$(this)[method]("").removeClass('placeholder');
 			}
 		});
-		$(':input[placeholder]', 'form').live('focusout', function(){
+		$(':input[placeholder],:input[data-placeholder]', 'form').live('focusout', function(){
 
 			var method = (this.tagName==='INPUT'?'val':'text');
 
 			if($(this)[method]()===''){
-				$(this)[method]($(this).attr('placeholder')).addClass("placeholder");
+				$(this)[method]($(this).attr('data-placeholder')||$(this).attr('placeholder')).addClass("placeholder");
 			}
 		});
 	}
@@ -544,7 +544,7 @@
 			return false;
 		}
 		// check for support for the placeholder attribute
-		return ( $(this).is("[type=range]") ? $(this) : $("input", this) ).filter("[type=range]").each(function(){
+		return ( $(this).is("[type=range],[data-type=range]") ? $(this) : $("input", this) ).filter("[type=range],[data-type=range]").each(function(){
 		
 			/**
 				// hide the input box
@@ -624,7 +624,7 @@
 		});
 
 		// check for support for the input[type=number] attribute
-		return ( $(this).is("[type=number]") ? $(this) : $("input", this) ).filter("[type=number]").each(function(){
+		return ( $(this).is("[type=number],[data-type=number]") ? $(this) : $("input", this) ).filter("[type=number],[data-type=number]").each(function(){
 			// Found
 			log("input[type=number]", this);
 
@@ -773,13 +773,13 @@
 		return ( $(this).is('form') ? $(this) : $('form',this)).each(function(){
 
 			// Add the placeholder support
-			$(":input[placeholder]", this).placeholder();
+			$(":input[placeholder],:input[data-placeholder]", this).placeholder();
 			
 			// Add the number support
-			$(":input[type=number]", this).number();
+			$("input[type=number],input[data-type=number]", this).number();
 
 			// Add range
-			$("input[type=range]", this).range();
+			$("input[type=range],input[data-type=range]", this).range();
 		
 		// prevent propagation of the form if it fails.
 		// this has to be bound to the form element directly, before additional events are added, otherwise it may not be executed.

@@ -49,12 +49,14 @@
 	</style>
 </head>
 <body>
+	<!-- PRE -->
 	<header>
 		<h1>I say, good &lt;form&gt;!</h1>
-		<p>
-			Wot'O, this is a jolly jQuery plugin for adding cheeky HTML5 forms to your site and wotnot. So simple to use you'll be done before morning tea.
-		</p>
 	</header>
+	<blockquote>
+		Wot'O, this is a jolly jQuery plugin for adding cheeky HTML5 forms to your site and wotnot. So simple to use you'll be done before morning tea.
+	</blockquote>
+	<!-- /PRE -->
 
 	<h2>$.form()</h2>
 	<section>
@@ -69,28 +71,28 @@
 			<input type="text" required/>
 			<br />
 			<label>search</label>
-			<input type="search" placeholder="Search me" />
+			<input type="search" data-type="search" placeholder="Search me"/>
 			<br />
 			<label>range</label>
-			<input type="range" step="0.5" min="0" max="10"/>
+			<input type="range" data-type="range" step="0.5" min="0" max="10" />
 			<br />
 			<label>date</label>
-			<input type="date" placeholder="Date" />
+			<input type="date" data-type="date" placeholder="Date" />
 			<br />
 			<label>time</label>
-			<input type="time" />
+			<input type="time" data-type="time" />
 			<br />
 			<label>number</label>
-			<input type="number" placeholder="Number 1-10" max="10" min="0"/>
+			<input type="number" date-type="number" placeholder="Number 1-10" max="10" min="0"/>
 			<br />
 			<label>color</label>
-			<input type="color" placeholder="Choose a color"/>
+			<input type="color" data-type="color" placeholder="Choose a color" />
 			<br />
 			<label>email</label>
-			<input type="email" placeholder="e.g. me@example.com"/>
+			<input type="email" data-type="email" placeholder="e.g. me@example.com" />
 			<br />
 			<label>url</label>
-			<input type="url" placeholder="e.g. http://example.com"/>
+			<input type="url" data-type="url" placeholder="e.g. http://example.com"/>
 			<br />
 			<label class="required">accept</label>
 			<input type="checkbox" required="required"/>
