@@ -6,7 +6,6 @@
  */
 (function($){
 
-	"use strict";
 
 	//
 	// Make creates a jquery element based on a CSS selector
@@ -78,7 +77,7 @@
 		
 				// Mozilla seems to be selecting the wrong Node, the one that comes before the selected node.
 				// I'm not sure if there's a configuration to solve this,
-				if(!sel.isCollapsed&&$.browser.mozilla){
+				if(!sel.isCollapsed && true){
 					// If we've selected an element, (note: only works on Anchors, only checked bold and spans)
 					// we can use the anchorOffset to find the childNode that has been selected
 					if(sel.focusNode.nodeName !== '#text'){
@@ -558,15 +557,14 @@
 	// Button[data-cmd] click
 	// Add handler for when a command button is clicked
 	//
-	$("button[data-cmd]").live('click', function(e){
+	function btnEvents(e){
 
 		// ... i.e. dont want to submit a form, if that's where the button was.
 		e.preventDefault();
 		e.stopPropagation();
 	
 		// make sure this is not going to insert outside the contentEditable iframe
-		if($.browser.msie){
-			try{
+		try{
 			//$('#iframe_'+$(this).parents("div.toolbar")[0].id.match('[0-9]+')[0])
 			var win = $('[contenteditable]').get(0);
 			win.focus();
@@ -577,10 +575,9 @@
 			if(!(s.left>=0&&s.top>=0)){
 				// restore the cursor position
 				doc.body.createTextRange().moveToPoint( win.posx, win.posy).select();
-			}}
-			catch(err){}
-			log("Word");
+			}
 		}
+		catch(err){}
 
 		//
 		// cmd is short for the command (or action) which we are applying to our
@@ -697,10 +694,10 @@
 			log("Uncaught error applying insert",e);
 		}
 		return false;
+	}
 
-	});
 
-	$("select[data-cmd]").live('change', function(){
+	function selectEvents(e){
 		//
 		try{
 			executeCommand($(this).attr('data-cmd'), this.options[this.selectedIndex].value);
@@ -708,7 +705,7 @@
 		catch(err){
 			log("Uncaught error applying insert",err);
 		}
-	});
+	}
 
 
 	//
@@ -839,7 +836,8 @@
 								continue;
 							}
 						}
-						if($.browser.msie)
+						// MSIE only?
+						if(true)
 							for( y in commandList[x].attr ){
 								if( this.getAttribute  && ( this.getAttribute(y) === commandList[x].attr[y] || ( commandList[x].attr[y] === null && this.getAttribute(y).length > 0 ) ) ){
 									c[x] = this.getAttribute(y);
@@ -860,7 +858,7 @@
 				$controls.find(':input[data-cmd]').each(function(){
 					var cmd = $(this).attr('data-cmd');
 					var bool = (typeof c[cmd] === 'undefined');
-					
+
 					if(this.tagName === 'BUTTON'){
 						if(!bool){
 							$(this).addClass('selected');
@@ -887,13 +885,18 @@
 					window.posx = s.left;
 					window.posy = s.top;
 				}
-				catch(e){}
+				catch(e){
+
+				}
+
+			})
 
 			//
 			// Bind dragdrop events to the $div
 			// When the user drops a file over we load it in.
 			//
-			}).bind('dragover',function(){return false;}).bind('drop', function(e){
+			.bind('dragover',function(){return false;})
+			.bind('drop', function(e){
 
 				// get the original event
 				e = (e&&e.originalEvent?e.originalEvent:window.event) || e;
@@ -906,47 +909,55 @@
 				insertimage(e.files?e:e.dataTransfer);
 				return false;
 			
+			})
+
+			//
+			// Drag items around within the editable area
+			// This is a little sketchy
+			// Add drag for elements in the page
+			.on("drag", function(e){
+				if(e.target === this){
+					return false;
+				}
+				if("target" in e && "elementFromPoint" in document){
+					var landing = document.elementFromPoint( e.originalEvent.clientX, e.originalEvent.clientY ) ;
+					
+					// Check that this is an appropriate landing location
+					if( $(landing).filter(function(){
+							return $(this).filter('[contenteditable]').length || $(this).parents('[contenteditable]').length;
+						}).length && landing !== e.target ){
+
+						log('landing', e.target, landing);
+
+						// Can this exist here
+						if(e.target.tagName.toLowerCase() === 'li' &&
+							'li,ul'.split('.').indexOf(landing.tagName.toLowerCase() ) === -1 ){
+							
+							// find the parent li element where this may exist
+							
+						}
+
+						// Is this item allowed to land here?
+						if( ( e.target.tagName.toLowerCase() === landing.tagName.toLowerCase() && 'p,li'.split(',').indexOf(landing.tagName.toLowerCase()) > -1 ) || landing.tagName.toLowerCase() === 'img' ) {
+							$(e.target).detach().insertBefore( landing );
+						}
+						else{
+							$(e.target).detach().prependTo( landing );
+						}
+					}
+				}
 			});
+
+
+			// Apply Events to buttons
+			$("button[data-cmd]").on('click', btnEvents);
+
+			/// ... and SELECT's
+			$("select[data-cmd]").on('change', selectEvents);
 		});
 	};
 	
 	
-	//
-	// Drag items around within the editable area
-	// This is a little sketchy
-	// Add drag for elements in the page
-	$('.editor[contenteditable]').live("drag", function(e){
-		if(e.target === this){
-			return false;
-		}
-		if("target" in e && "elementFromPoint" in document){
-			var landing = document.elementFromPoint( e.originalEvent.clientX, e.originalEvent.clientY ) ;
-			
-			// Check that this is an appropriate landing location
-			if( $(landing).filter(function(){
-					return $(this).filter('[contenteditable]').length || $(this).parents('[contenteditable]').length;
-				}).length && landing !== e.target ){
-
-				log('landing', e.target, landing);
-
-				// Can this exist here
-				if(e.target.tagName.toLowerCase() === 'li' &&
-					'li,ul'.split('.').indexOf(landing.tagName.toLowerCase() ) === -1 ){
-					
-					// find the parent li element where this may exist
-					
-				}
-
-				// Is this item allowed to land here?
-				if( ( e.target.tagName.toLowerCase() === landing.tagName.toLowerCase() && 'p,li'.split(',').indexOf(landing.tagName.toLowerCase()) > -1 ) || landing.tagName.toLowerCase() === 'img' ) {
-					$(e.target).detach().insertBefore( landing );
-				}
-				else{
-					$(e.target).detach().prependTo( landing );
-				}
-			}
-		}
-	});
 
 
 	//

@@ -212,3 +212,12 @@ input.datalist + div.datalist{
 datalist select{
 	display:none;
 }
+
+
+
+/*************************
+ * Color
+ *************************/
+input[type=color],input[data-type=color]{
+
+}

@@ -6,8 +6,8 @@
 	<link href="/_packages/document.css" rel="stylesheet"/>
 
 	<!-- Plugins -->
-	<link href="jquery.form.css" rel="stylesheet"/>
-	<link href="jquery.editor.css" rel="stylesheet"/>
+	<link href="./src/jquery.form.css" rel="stylesheet"/>
+	<link href="./src/jquery.editor.css" rel="stylesheet"/>
 
 
 <script>
@@ -18,12 +18,23 @@
 				document.write('<script src="'+a[i]+'"><\/script>');
 			}
 		}
-		loadScript([['/_packages/jquery.js','http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'][local]]);
+		loadScript([['/_packages/jquery-1.9.1.js','http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js'][local]]);
 //]]>
 </script>
 
-	<script src="jquery.form.js"></script>
-	<script src="jquery.editor.js"></script>
+	<script src="./src/jquery.form.js"></script>
+
+	<script src="./src/jquery.color.js"></script>
+	<script src="./src/jquery.datalist.js"></script>
+	<script src="./src/jquery.date.js"></script>
+	<script src="./src/jquery.number.js"></script>
+	<script src="./src/jquery.placeholder.js"></script>
+	<script src="./src/jquery.range.js"></script>
+	<script src="./src/jquery.textarea.js"></script>
+	<script src="./src/jquery.checkValidity.js"></script>
+	<script src="./src/jquery.event.submit.js"></script>
+	<script src="./src/jquery.editor.js"></script>
+
 	<!-- EOF Plugins -->
 
 	<!-- Document formatting -->
@@ -83,7 +94,7 @@
 			<input type="time" data-type="time" />
 			<br />
 			<label>number</label>
-			<input type="number" date-type="number" placeholder="Number 1-10" max="10" min="0"/>
+			<input type="number" data-type="number" placeholder="Number 1-10" max="10" min="0"/>
 			<br />
 			<label>color</label>
 			<input type="color" data-type="color" placeholder="Choose a color" />
@@ -178,13 +189,15 @@
 		$("section form").each(function(){
 			$("<pre></pre>").text($(this).html().replace(/^\n+\s*/,"").replace(/\n\s*/g,"\n")).insertAfter(this);
 		});
+
 		/**
+		 * Initiate the shim
 		 * Bind additional controls to the form's in the page
 		 */
 		$("form").form();
 	</script>
 
-	<script src="../_packages/jsprettify.packed.js"></script>
+	<script src="/_packages/jsprettify.packed.js"></script>
 	<script>prettyPrint();</script>
 
 
