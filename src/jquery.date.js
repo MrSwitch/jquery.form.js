@@ -1,5 +1,3 @@
-
-
 /**
  * Calendar
  */
@@ -19,7 +17,7 @@ $.fn.date = function(){
 			$input = $(this);
 		
 		if(!$calendar.length){
-			$calendar = $('<div class="calendar"><div></div></div>').insertAfter(this).find('div');
+			$calendar = $('<div class="date"><div></div></div>').insertAfter(this).find('div');
 		}
 
 		// trigger close calendar when clicked outside

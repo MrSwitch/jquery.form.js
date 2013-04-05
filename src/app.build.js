@@ -17,12 +17,15 @@ var UglifyJS = require("uglify-js");
 var cleanCSS = require("clean-css");
 
 
-var scripts = [];
+var scripts = [], styles = [];
 
 
 fs.readdirSync('./').forEach(function(name){
 	if( name.match(/^jquery.*?\.js$/) && name !== "jquery.form.js" && name !== "jquery.editor.js" ){
 		scripts.push(name);
+	}
+	else if( name.match(/^jquery.*?\.css$/) && name !== "jquery.editor.css" ){
+		styles.push(fs.readFileSync("./"+name).toString());
 	}
 });
 
@@ -33,19 +36,20 @@ var unminifedJS = [],
 	minifedJS = [];
 
 
-scripts.forEach(function(name){
+scripts.forEach(function(name, i){
 	unminifedJS.push( fs.readFileSync("./"+name, "utf8") );
 	minifedJS.push( UglifyJS.minify("./"+name).code );
 });
 
+
 //
 // Build Files
-// 
+//
 var build = {
 	"../dist/jquery.form.js" : unminifedJS.join('\n'),
 	"../dist/jquery.form.min.js" : minifedJS.join('\n'),
-	"../dist/jquery.form.css" : fs.readFileSync("./jquery.form.css", "utf8"),
-	"../dist/jquery.form.min.css" : cleanCSS.process(fs.readFileSync("./jquery.form.css").toString()),
+	"../dist/jquery.form.css" : styles.join('\n'),
+	"../dist/jquery.form.min.css" : cleanCSS.process(styles.join('\n')),
 	"../dist/jquery.editor.js" : fs.readFileSync("./jquery.editor.js", "utf8"),
 	"../dist/jquery.editor.min.js" : UglifyJS.minify("./jquery.editor.js").code,
 	"../dist/jquery.editor.css" : fs.readFileSync("./jquery.editor.css", "utf8"),
