@@ -24,7 +24,7 @@ Then at the bottom of the page invoke the shim on the form elements in the page.
 	$("form").form();
 
 
-Minified versions are available at [jquery.form.min.js](./dist/jquery.form.min.js) and add the css jquery.form.min.css
+Minified versions are available at [jquery.form.min.js](./dist/jquery.form.min.js) and add the css [jquery.form.min.css](./dist/jquery.form.min.css)
 
 Alternatively you can implement the features individually, see below
 
