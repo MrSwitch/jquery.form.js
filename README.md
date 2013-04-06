@@ -2,7 +2,7 @@
 
 
 
- I say, good &lt;form&gt;!
+# I say, good &lt;form&gt;!
 
 
 
@@ -11,7 +11,7 @@ Should you be bored after tea, then dont worry, there's a rather ravishing WYSIW
 
 
 
-# The quick and dirty implementation
+## The quick and dirty implementation
 Simply, include the folllowing JavaScript file...
 
 [&lt;script src="./dist/jquery.form.js"&gt;&lt;/script&gt;](./dist/jquery.form.js)
@@ -30,7 +30,7 @@ Alternatively you can implement the features individually, see below
 
 
 
-# Check Validity (HTML5 Shim)
+## Check Validity (HTML5 Shim)
 
 	<form>
 		<label class="required">Text required</label> 
@@ -76,7 +76,7 @@ Bind the test to the form submit
 	</script>
 
 
-## CheckValidity Automatic
+### CheckValidity Automatic
 
 Include the script
 
@@ -93,7 +93,7 @@ Intiate the bound test automatically, just by assigning a form on submit event, 
 
 
 
-# Range (HTML5 Shim)
+## Range (HTML5 Shim)
 
 	<form>
 		<label>input [type=range]</label>
@@ -115,7 +115,7 @@ Bind the Control to input elements with [type=range] attribute
 	</script>
 
 
-# Color (HTML5 Shim)
+## Color (HTML5 Shim)
 
 	<form>
 		<label>input [type=color]</label>
@@ -138,7 +138,7 @@ Bind the Control to input elements with [type=color] attribute
 
 
 
-# Date (HTML5 Shim)
+## Date (HTML5 Shim)
 
 	<form>
 		<label>input [type=date]</label>
@@ -161,7 +161,7 @@ Bind the Control to input elements with [type=date] attribute
 
 
 
-# Placeholder (HTML5 Shim)
+## Placeholder (HTML5 Shim)
 
 	<form>
 		<label>input [placeholder]</label>
@@ -183,7 +183,7 @@ Bind the Control to any input elements with a placeholder attribute
 	</script>
 
 
-# Number (HTML5 Shim)
+## Number (HTML5 Shim)
 
 	<form>
 		<label>Number field</label>
@@ -213,7 +213,7 @@ Bind the Control to the input elements with [type=number] attributes
 
 
 
-# Datalist (HTML5 Shim)
+## Datalist (HTML5 Shim)
 
 	<form>
 		<label>[datalist]</label>
@@ -244,7 +244,7 @@ Bind the Control to the datalist
 
 
 
-# Textarea -  Expand as you type
+## Textarea -  Expand as you type
 	<form>
 		<label>&lt;textarea&gt;</label>
 		<textarea placeholder="Expands as you type"></textarea>
@@ -265,7 +265,7 @@ Bind the Control to the textarea
 	</script>
 
 
-# WYSIWYG Editor
+## WYSIWYG Editor
 
 	<form>
 		<textarea type="html">Write here</textarea>
@@ -286,7 +286,7 @@ Bind the Control to the editor
 	</script>
 
 
-# Predict - AutoComplete
+## Predict - AutoComplete
 
 	<form>
 		<label>Predicting</label> <input type="search" name="countries" placeholder="Country Names"/>
