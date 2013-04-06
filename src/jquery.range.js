@@ -7,18 +7,8 @@ $.fn.range = function(){
 		return false;
 	}
 	// check for support for the placeholder attribute
-	return ( $(this).is("[type=range],[data-type=range]") ? $(this) : $("input", this) ).filter("[type=range],[data-type=range]").each(function(){
+	return $(this).find("input").add(this).filter("input[type=range],input[data-type=range]").each(function(){
 	
-		/**
-			// hide the input box
-			$(this).hide();
-
-			// Add a range slider
-			$("<div class='range'><div class='line'></div><div class='pointer'></div></div>").insertAfter(this).touch(function(e){
-				log(e.offsetX);
-				$("div.pointer", this).css({marginLeft:e.offsetX+"px"});
-			});
-		*/
 		var step = parseFloat($(this).attr('step')) || 1,
 			max = parseFloat($(this).attr('max')) || 100,
 			min = parseFloat($(this).attr('min')) || 0,

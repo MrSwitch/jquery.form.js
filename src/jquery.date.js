@@ -9,7 +9,7 @@ $.fn.date = function(){
 	}
 
 
-	$( $(this).is("input[type=date],input[data-type=date]")?this:$("input[type=date],input[data-type=date]", this ) ).on("focus select", function(){
+	return $(this).find("input").add(this).filter("input[type=date],input[data-type=date]").on("focus select", function(){
 	
 		var $calendar = $("+ div.calendar div", this).fadeIn('fast'),
 			days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],

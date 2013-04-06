@@ -18,7 +18,7 @@ $.fn.number = function(){
 	});
 
 	// check for support for the input[type=number] attribute
-	return ( $(this).is("input[type=number],input[data-type=number]") ? $(this) : $("input[type=number],input[data-type=number]", this) ).each(function(){
+	return $(this).find("input").add(this).filter("input[type=number],input[data-type=number]").each(function(){
 		// Found
 
 		var el = this,

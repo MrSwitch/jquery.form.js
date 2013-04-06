@@ -10,11 +10,13 @@
 	<link rel="stylesheet" href="./src/jquery.color.css"/>
 	<link rel="stylesheet" href="./src/jquery.datalist.css"/>
 	<link rel="stylesheet" href="./src/jquery.date.css"/>
-	<link rel="stylesheet" href="./src/jquery.editor.css"/>
-	<link rel="stylesheet" href="./src/jquery.form.css"/>
+
 	<link rel="stylesheet" href="./src/jquery.number.css"/>
 	<link rel="stylesheet" href="./src/jquery.placeholder.css"/>
 	<link rel="stylesheet" href="./src/jquery.range.css"/>
+
+	<link rel="stylesheet" href="./src/jquery.editor.css"/>
+	<link rel="stylesheet" href="./src/jquery.predict.css"/>
 
 
 <script>
@@ -29,18 +31,7 @@
 //]]>
 </script>
 
-	<script src="./src/jquery.form.js"></script>
-
-	<script src="./src/jquery.color.js"></script>
-	<script src="./src/jquery.datalist.js"></script>
-	<script src="./src/jquery.date.js"></script>
-	<script src="./src/jquery.number.js"></script>
-	<script src="./src/jquery.placeholder.js"></script>
-	<script src="./src/jquery.range.js"></script>
-	<script src="./src/jquery.textarea.js"></script>
-	<script src="./src/jquery.checkValidity.js"></script>
-	<script src="./src/jquery.event.submit.js"></script>
-	<script src="./src/jquery.editor.js"></script>
+	<script src="./sandbox/countryNames.js"></script>
 
 	<!-- EOF Plugins -->
 
@@ -48,15 +39,10 @@
 	<script src="/_packages/document.js"></script>
 
 	<style>
-		form, form + pre{
-			width:45%;
-			display:inline-block;
-			vertical-align:top;
-		}	
 			form label{
-			    width:100px;
+			    max-width:200px;
+			    width:100%;
 			    display:inline-block;
-			    line-height:3em;
 			    margin-left:30px;
 			}
 			
@@ -67,145 +53,324 @@
 	</style>
 </head>
 <body>
-	<!-- PRE -->
-	<header>
-		<h1>I say, good &lt;form&gt;!</h1>
-	</header>
-	<blockquote>
-		Wot'O, this is a jolly jQuery plugin for adding cheeky HTML5 forms to your site and wotnot. So simple to use you'll be done before morning tea.
-	</blockquote>
-	<!-- /PRE -->
-
-	<h2>$.form()</h2>
-	<section>
-		<pre>&lt;!-- start your form section --&gt;
-&lt;form&gt;</pre>
-	</section>
-
-	<section>
-		<h2>input[type=*]</h2>
-		<form>
-			<label class="required">text</label> 
-			<input type="text" required/>
-			<br />
-			<label>search</label>
-			<input type="search" data-type="search" placeholder="Search me"/>
-			<br />
-			<label>range</label>
-			<input type="range" data-type="range" step="0.5" min="0" max="10" />
-			<br />
-			<label>date</label>
-			<input type="date" data-type="date" placeholder="Date" />
-			<br />
-			<label>time</label>
-			<input type="time" data-type="time" />
-			<br />
-			<label>number</label>
-			<input type="number" data-type="number" placeholder="Number 1-10" max="10" min="0"/>
-			<br />
-			<label>color</label>
-			<input type="color" data-type="color" placeholder="Choose a color" />
-			<br />
-			<label>email</label>
-			<input type="email" data-type="email" placeholder="e.g. me@example.com" />
-			<br />
-			<label>url</label>
-			<input type="url" data-type="url" placeholder="e.g. http://example.com"/>
-			<br />
-			<label class="required">accept</label>
-			<input type="checkbox" required="required"/>
-			<br />
-			
-			<button type="submit">Submit</button>
-		</form>
-	</section>
-
-	<section>
-		<h2>input[*]</h2>
-		<form>
-			<label>[required]</label>
-			<input type="text" required />
-			<br />
-			<label>[placeholder]</label>
-			<input type="text" placeholder="thingy n' wotnot"/>
-			<br />
-			<label>[max]</label>
-			<input type="number" max="100"/>
-			<br />
-			<label>[min]</label>
-			<input type="number" min="100"/>
-			<br />
-			<label>[pattern]</label>
-			<input type="text" pattern=""/>
-			<br />
-			<label>[step]</label>
-			<input type="number" step="2"/>
-			<br />
-			<label>[datalist]</label>
-			<input list="datalist" type="text" placeholder="Predictive"/>
-			<datalist id="datalist">
-				<select>
-				<option value="Hello" />
-				<option value="Yo" />
-				<option value="To my Dearest" />
-				<option value="Oi you, no!" />
-				</select>
-			</datalist><br />
-			<button type="submit">Submit</button>
-		</form>
-	</section>
 
 
-	<section>
-		<h2>textarea</h2>
-		<form>
-			<label>&lt;textarea&gt;</label>
-			<textarea placeholder="Expands as you type"></textarea>
-			<br />
-		</form>
-	</section>
 
-	<section>
-		<pre>
-&lt;!-- end of form section --&gt;
-&lt;form&gt;
+<!--
+	HEADER
+-->
+<nav class="toc"></nav>
+<header>
+	<h1>I say, good &lt;form&gt;!</h1>
+</header>
 
-&lt;!-- load in the shim --&gt;
-&lt;script src="jquery.form.js"&gt;&lt;script&gt;
+<blockquote>
+	<p>Wot'O, this is a jolly jQuery plugin for adding cheeky HTML5 forms to your site and wotnot. So simple to use you'll be done before morning tea. 
+	<p>Should you be bored after tea, then dont worry, there's a rather ravishing WYSIWYG editor and a psyhic predictive text input to entertain you well in time for mid afternoon tea.
+</blockquote>
 
-&lt;!-- ... and run --&gt;
-&lt;script&gt;$('form').form();&lt;script&gt;
+
+<h2>The quick and dirty implementation</h2>
+<p>Simply, include the folllowing JavaScript file...
+
+<a href="./dist/jquery.form.js" class="pre">&lt;script src="./dist/jquery.form.js"&gt;&lt;/script&gt;</a>
+ and CSS StyleSheet... 
+<a href="./dist/jquery.form.css" class="pre">&lt;link rel="stylesheet" href="./dist/jquery.form.css"/&gt;</a>
+
+Then at the bottom of the page invoke the shim on the form elements in the page...
+
+<pre class="pre">
+$("form").form();
 </pre>
-	</section>
 
-	<h2>$.editor()</h2>
+<p>Minified versions are available at <a href="./dist/jquery.form.min.js">jquery.form.min.js</a> and add the css <a href="./dist/jquery.form.min.css">jquery.form.min.css</a>
 
-	<section>
-	    <h3>textarea[type=html]</h3>
-	    <form>
-				<textarea type="html" style="max-width:400px;height:200px;">Write here</textarea>
-	            <button type="submit">Submit</button>
-	    </form>
-	</section>
-	
-	
-	<script>
-		/**
-		 * Create the <pre> code snipets
-		 */
-		$("section form").each(function(){
-			$("<pre></pre>").text($(this).html().replace(/^\n+\s*/,"").replace(/\n\s*/g,"\n")).insertAfter(this);
-		});
+<p>Alternatively you can implement the features individually, see below
 
-		/**
-		 * Initiate the shim
-		 * Bind additional controls to the form's in the page
-		 */
-		$("form").form();
+
+<!--
+	BODY
+-->
+
+
+<h2>Check Validity (HTML5 Shim)</h2>
+	<form>
+		<label class="required">Text required</label> 
+		<input type="text" required/>
+		<br />
+		<label class="required">Checked required</label> 
+		<input type="checkbox" required="required"/>
+		<br />
+		<label>Type time</label>
+		<input type="time" data-type="time" />
+		<br />
+		<label>Type number</label>
+		<input type="number" data-type="number" placeholder="Number 1-10" max="10" min="0"/>
+		<br />
+		<label>Type email</label>
+		<input type="email" data-type="email" placeholder="e.g. me@example.com" />
+		<br />
+		<label>Type Url</label>
+		<input type="url" data-type="url" placeholder="e.g. http://example.com"/>
+		<br/>
+		<label>Type Match pattern</label>
+		<input type="text" pattern="[a-z0-9]"/>
+		<br />
+		<button type="submit">Submit</button>
+	</form>
+
+Include the stylesheet
+
+	<link class="pre" rel="stylesheet" href="./src/jquery.checkValidity.css"/>
+
+Include the script
+
+	<script class="pre" src="./src/jquery.checkValidity.js"></script>
+
+Bind the test to the form submit
+
+	<script class="pre">
+	$("form").submit(function(){
+		if( $(this).checkValidity() ){
+			alert("Form passed");	
+		}
+	});
 	</script>
 
-	<script src="/_packages/jsprettify.packed.js"></script>
-	<script>prettyPrint();</script>
+
+<h3>CheckValidity Automatic</h3>
+
+Include the script
+
+	<script class="pre" src="./src/jquery.event.submit.js"></script>
+
+Intiate the bound test automatically, just by assigning a form on submit event, e.g.
+
+	<script class="pre">
+	$("form").submit(function(e){
+		alert("Form passed again, notice this wasn't sent when the form fails, yet the check wasn't included");
+		e.preventDefault();
+	});
+	</script>
+
+
+
+<h2>Range (HTML5 Shim)</h2>
+
+	<form>
+		<label>input [type=range]</label>
+		<input type="range" data-type="range" />
+	</form>
+
+Include the stylesheet
+
+	<link class="pre" rel="stylesheet" href="./src/jquery.range.css"/>
+
+Include the script
+
+	<script class="pre" src="./src/jquery.range.js"></script>
+
+Bind the Control to input elements with [type=range] attribute
+
+	<script class="pre">
+	$(":input").range();
+	</script>
+
+
+<h2>Color (HTML5 Shim)</h2>
+
+	<form>
+		<label>input [type=color]</label>
+		<input type="color" data-type="color" />
+	</form>
+
+Include the stylesheet
+
+	<link class="pre" rel="stylesheet" href="./src/jquery.color.css"/>
+
+Include the script
+
+	<script class="pre" src="./src/jquery.color.js"></script>
+
+Bind the Control to input elements with [type=color] attribute
+
+	<script class="pre">
+	$(":input").color();
+	</script>
+
+
+
+<h2>Date (HTML5 Shim)</h2>
+
+	<form>
+		<label>input [type=date]</label>
+		<input type="date" data-type="date" />
+	</form>
+
+Include the stylesheet
+
+	<link class="pre" rel="stylesheet" href="./src/jquery.date.css"/>
+
+Include the script
+
+	<script class="pre" src="./src/jquery.date.js"></script>
+
+Bind the Control to input elements with [type=date] attribute
+
+	<script class="pre">
+	$(":input").date();
+	</script>
+
+
+
+<h2>Placeholder (HTML5 Shim)</h2>
+
+	<form>
+		<label>input [placeholder]</label>
+		<input type="text" placeholder="Can you see it?"/>		
+	</form>
+
+Include the stylesheet
+
+	<link class="pre" rel="stylesheet" href="./src/jquery.placeholder.css"/>
+
+Include the script
+
+	<script class="pre" src="./src/jquery.placeholder.js"></script>
+
+Bind the Control to any input elements with a placeholder attribute
+
+	<script class="pre">
+	$(":input").placeholder();
+	</script>
+
+
+<h2>Number (HTML5 Shim)</h2>
+
+	<form>
+		<label>Number field</label>
+		<input type="number"/>
+		<br />
+		<label>Number limited to [min=0] and [max=10]</label>
+		<input type="number" min="0" max="10"/>
+		<br />
+		<label>Number with a [step]</label>
+		<input type="number" step="2"/>
+	</form>
+
+Include the stylesheet
+
+	<link class="pre" rel="stylesheet" href="./src/jquery.number.css"/>
+
+Include the script
+
+	<script class="pre" src="./src/jquery.number.js"></script>
+
+Bind the Control to the input elements with [type=number] attributes
+
+	<script class="pre">
+	$("input[type=number]").number();
+	</script>
+
+
+
+
+<h2>Datalist (HTML5 Shim)</h2>
+
+	<form>
+		<label>[datalist]</label>
+		<input list="datalist" type="text" placeholder="Predictive"/>
+		<datalist id="datalist">
+			<select>
+			<option value="Hello" />
+			<option value="Yo" />
+			<option value="To my Dearest" />
+			<option value="Oi you, no!" />
+			</select>
+		</datalist>
+	</form>
+
+Include the stylesheet
+
+	<link class="pre" rel="stylesheet" href="./src/jquery.datalist.css"/>
+
+Include the script
+
+	<script class="pre" src="./src/jquery.datalist.js"></script>
+
+Bind the Control to the datalist
+
+	<script class="pre">
+	$("input[list]").datalist();
+	</script>
+
+
+
+<h2>Textarea -  Expand as you type</h2>
+	<form>
+		<label>&lt;textarea&gt;</label>
+		<textarea placeholder="Expands as you type"></textarea>
+	</form>
+
+Include the stylesheet
+
+	<link class="pre" rel="stylesheet" href="./src/jquery.textarea.css"/>
+
+Include the script
+
+	<script class="pre" src="./src/jquery.textarea.js"></script>
+
+Bind the Control to the textarea
+
+	<script class="pre">
+	$("textarea").textarea();
+	</script>
+
+
+<h2>WYSIWYG Editor</h2>
+
+	<form>
+		<textarea type="html">Write here</textarea>
+	</form>
+
+Include the stylesheet
+
+	<link class="pre" rel="stylesheet" href="./src/jquery.editor.css"/>
+
+Include the script
+
+	<script class="pre" src="./src/jquery.editor.js"></script>
+
+Bind the Control to the editor
+
+	<script class="pre">
+	$("textarea[type=html]").editor();
+	</script>
+
+
+<h2>Predict - AutoComplete</h2>
+
+	<form>
+		<label>Predicting</label> <input type="search" name="countries" placeholder="Country Names"/>
+	</form>
+
+Include the stylesheet
+
+	<link class="pre" rel="stylesheet" href="./src/jquery.predict.css"/>
+
+Include the script
+
+	<script class="pre" src="./src/jquery.predict.js"></script>
+
+Attach the data ('countryNames' here, is an Array, but it can be something else)
+
+	<script class="pre">
+	$("input[name=countries]").predict({
+		data : countryNames
+	});
+	</script>
+
+
 
 
 </body>

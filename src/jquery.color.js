@@ -8,7 +8,7 @@ $.fn.color = function(){
 		return $(this);
 	}
 
-	$( $(this).is(":input[type=color]")? this :$("input[type=color]", this ) ).on('click focusout', function(){
+	$(this).find("input").add(this).filter("input[type=color],input[data-type=color]").on('click focusout', function(){
 
 		$(this).css({backgroundColor:this.value});
 

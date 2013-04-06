@@ -3,7 +3,7 @@
  */
 $.fn.textarea = function(){
 
-	$($(this).is('textarea')?this:$("textarea", this ) ).on('keyup focus', function(){
+	return $(this).find("textarea").add(this).filter("textarea").on('keyup focus', function(){
 
 		var el = this;
 		if(el.tagName.toLowerCase()!=="textarea"){return;}

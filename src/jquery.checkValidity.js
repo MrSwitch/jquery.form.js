@@ -125,7 +125,7 @@ $.fn.checkValidity = function(){
 	var b = true;
 	
 	// AN HTML FORM WOULDN'T POST IF THERE ARE ERRORS. HOWEVER
-	($(this).is(':input') ? this : $(":input", this)).each(function(){
+	$(this).find(":input").add(this).filter(":input").each(function(){
 		if(b){
 			b = checkValidity(this);
 		}

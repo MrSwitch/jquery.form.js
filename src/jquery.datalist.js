@@ -9,7 +9,7 @@ $.fn.datalist = function(){
 	}
 
 	// Add keyup event to build the list based on user suggestions
-	$( $(this).is(':input[list]')? this: $("input[list]", this) ).on("keyup",function(e){
+	return $(this).find("input").add(this).filter("input[list]").on("keyup",function(e){
 
 		// Show
 		$(this).addClass("datalist");

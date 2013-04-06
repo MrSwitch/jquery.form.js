@@ -21,20 +21,7 @@
 		return $('<'+(s||'div')+'>').attr(a);
 	};
 
-	//
-	// Overwrite the form function and bind the original form function to the execution
-	//
-	var old_form = $.fn.form;
-	$.fn.form = function(){
-		// trigger the old form
-		old_form.call(this);
 
-		// loop through the assets
-		return $(this).each(function(){
-			// Add the editor to textareas with type=html
-			$("textarea[type=html]", this).editor();
-		});
-	};
 
 	//
 	// Loggin
