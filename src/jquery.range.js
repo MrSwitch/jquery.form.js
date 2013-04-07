@@ -3,9 +3,17 @@
  */
 $.fn.range = function(){
 
-	if($.support.range){
-		return false;
+	// Feature Detect
+	var support = (function(type){
+		var el = document.createElement("input");
+		el.type=type;
+		return el.type === type;
+	})("range");
+
+	if(support){
+		return $(this);
 	}
+
 	// check for support for the placeholder attribute
 	return $(this).find("input").add(this).filter("input[type=range],input[data-type=range]").each(function(){
 	
@@ -17,7 +25,7 @@ $.fn.range = function(){
 		// Mouse key depressed
 		var clicked = false;
 		$(document).on("mousedown mouseup", function(e){
-			clicked = e.type === 'mousedown';
+			clicked = (e.type === 'mousedown');
 		});
 
 		$(this).addClass("range").bind("click mousemove",function(e){
@@ -47,8 +55,10 @@ $.fn.range = function(){
 
 			// value
 			$(this).val(v);
+			$(this).attr("value", v);
+			$(this).trigger('change');
 		});
-	}).watch('value', function(){
+	}).on('change', function(){
 	
 		var step = parseFloat($(this).attr('step')) || 1,
 			max = parseFloat($(this).attr('max')) || 100,

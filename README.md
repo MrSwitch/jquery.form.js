@@ -31,8 +31,8 @@ Minified versions are available at [jquery.form.min.js](./dist/jquery.form.min.j
 Alternatively you can implement the features individually, see below
 
 
-
 ## Check Validity (HTML5 Shim)
+
 
 	<form>
 		<label class="required">Text required</label> 
@@ -189,13 +189,13 @@ Bind the Control to any input elements with a placeholder attribute
 
 	<form>
 		<label>Number field</label>
-		<input type="number"/>
+		<input type="number" data-type="number"/>
 		<br />
 		<label>Number limited to [min=0] and [max=10]</label>
-		<input type="number" min="0" max="10"/>
+		<input type="number" data-type="number" min="0" max="10"/>
 		<br />
 		<label>Number with a [step]</label>
-		<input type="number" step="2"/>
+		<input type="number" data-type="number" step="2"/>
 	</form>
 
 Include the stylesheet
@@ -209,7 +209,7 @@ Include the script
 Bind the Control to the input elements with [type=number] attributes
 
 	<script class="pre">
-	$("input[type=number]").number();
+	$("input[type=number],input[data-type=number]").number();
 	</script>
 
 

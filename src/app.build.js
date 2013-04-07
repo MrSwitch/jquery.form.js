@@ -46,6 +46,7 @@ scripts.forEach(function(name, i){
 // Build Files
 //
 var build = {
+	"../README.md" : htmlToMarkDown(fs.readFileSync("../index.html", "utf8")),
 	"../dist/jquery.form.js" : unminifedJS.join('\n'),
 	"../dist/jquery.form.min.js" : minifedJS.join('\n'),
 	"../dist/jquery.form.css" : styles.join('\n'),
@@ -66,4 +67,54 @@ for(var x in build){
 			}
 		});
 	})(x, build[x]);
+}
+
+
+//
+function htmlToMarkDown(s){
+
+	//
+	function getAttributes(s){
+		var o = {};
+		s.replace(/([a-z]+)\s*=\s*("|')?(.*?)(\2)/g, function(m,key,quote,value){
+			o[key] = value;
+		});
+		return o;
+	}
+
+	// Loop through the HTML
+	var lines = s.split(/\n/),
+		r = [],
+		body = false;
+
+	for(var i=0;i<lines.length;i++){
+		var line = lines[i];
+		if(!body){
+			if(line.match(/<body>/)){
+				body = true;
+			}
+		}
+		else if(line.match(/^[\s]/)){
+			// replace
+			r.push(line);
+		}
+		else{
+			var reg = /<([a-z0-9]+)([^>]*)>(.*?)<\/\1>/g;
+			r.push(line.replace(reg, function self(m,tag,attr,content){
+				var suffix = '',
+					prefix = tag.match(/h[0-9]/)?tag.replace(/h([0-9])/, function(m,c){
+						var a = [];
+						a.length = parseInt(c,10);
+						return "#" + a.join("#")+" ";
+					}):'';
+				if(tag === 'a'){
+					prefix = '[';
+					suffix = ']('+(getAttributes(attr).href||'')+')';
+				}
+				return prefix + content.replace(reg,self) + suffix;
+			}).replace(/<[^>]+>/g,''));
+		}
+	}
+
+	return r.join("\n");
 }

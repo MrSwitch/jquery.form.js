@@ -4,7 +4,10 @@
  */
 $.fn.datalist = function(){
 
-	if($.support.datalist){
+
+	var support = "list" in document.createElement("input");
+
+	if(support){
 		return false;
 	}
 

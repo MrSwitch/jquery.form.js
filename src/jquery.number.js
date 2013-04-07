@@ -5,8 +5,16 @@
  */
 $.fn.number = function(){
 
-	if($.support.number){
-		return $(this);
+	// Feature Detect
+	var support = (function(type){
+		var el = document.createElement("input");
+		el.type=type;
+		return el.type === type;
+	})("number");
+
+	// Does the browser support it already?
+	if(support){
+		//return $(this);
 	}
 
 	// kill iterations to increase the value

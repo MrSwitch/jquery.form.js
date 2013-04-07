@@ -4,7 +4,18 @@
 
 $.fn.date = function(){
 
-	if($.support.date){
+	// Detect support?
+	var support = (function(type){
+		try{
+			var el = document.createElement("input");
+			el.type=type;
+			return el.type === type;
+		}catch(e){
+			return false;
+		}
+	})("date");
+
+	if(support){
 		return $(this);
 	}
 

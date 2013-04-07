@@ -10,8 +10,8 @@ $.fn.predict = function(opts){
 	opts.selected = opts.selected || function(){};
 	opts.each = opts.each || function(){ return "<div>"+this+"</div>"; };
 	opts.filter = opts.filter || function (i,item,q){return !!q;};
-	opts.hintElement = opts.hintElement || console.error("$.fn.predict: Undefined preperty 'hintElement'");
-	opts.dataListElement = opts.dataListElement || console.error("$.fn.predict: Undefined preperty 'dataListElement'");
+	opts.hintElement = opts.hintElement || null;
+	opts.dataListElement = opts.dataListElement || null;
 	opts.toggleItemClass = opts.toggleItemClass || "predict-list-item";
 
 

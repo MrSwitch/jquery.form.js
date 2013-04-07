@@ -125,9 +125,13 @@ $.fn.checkValidity = function(){
 	var b = true;
 	
 	// AN HTML FORM WOULDN'T POST IF THERE ARE ERRORS. HOWEVER
-	($(this).is(':input') ? this : $(":input", this)).each(function(){
+	$(this).find(":input").add(this).filter(":input").each(function(){
 		if(b){
 			b = checkValidity(this);
+
+			if(!b){
+				$(this).focus();
+			}
 		}
 	});
 	
@@ -142,11 +146,22 @@ $.fn.checkValidity = function(){
  */
 $.fn.color = function(){
 
-	if($.support.color){
+	var support = (function(type){
+		try{
+			var el = document.createElement("input");
+			el.type=type;
+			return el.type === type;
+		}
+		catch(e){
+			return false;
+		}
+	})("color");
+
+	if(support){
 		return $(this);
 	}
 
-	$( $(this).is(":input[type=color]")? this :$("input[type=color]", this ) ).on('click focusout', function(){
+	return $(this).find("input").add(this).filter("input[type=color],input[data-type=color]").on('click focusout', function(){
 
 		$(this).css({backgroundColor:this.value});
 
@@ -166,10 +181,7 @@ $.fn.color = function(){
 				this.style.color = ( parseInt(m[1],10) + parseInt(m[2],10) + parseInt(m[3],10) ) < 500 ? 'white' : 'black';
 			}
 		}
-
 	});
-
-	return $(this);
 };
 
 /**
@@ -178,12 +190,15 @@ $.fn.color = function(){
  */
 $.fn.datalist = function(){
 
-	if($.support.datalist){
+
+	var support = "list" in document.createElement("input");
+
+	if(support){
 		return false;
 	}
 
 	// Add keyup event to build the list based on user suggestions
-	$( $(this).is(':input[list]')? this: $("input[list]", this) ).on("keyup",function(e){
+	return $(this).find("input").add(this).filter("input[list]").on("keyup",function(e){
 
 		// Show
 		$(this).addClass("datalist");
@@ -253,20 +268,29 @@ $.fn.datalist = function(){
 
 };
 
-
-
 /**
  * Calendar
  */
 
 $.fn.date = function(){
 
-	if($.support.date){
+	// Detect support?
+	var support = (function(type){
+		try{
+			var el = document.createElement("input");
+			el.type=type;
+			return el.type === type;
+		}catch(e){
+			return false;
+		}
+	})("date");
+
+	if(support){
 		return $(this);
 	}
 
 
-	$( $(this).is("input[type=date],input[data-type=date]")?this:$("input[type=date],input[data-type=date]", this ) ).on("focus select", function(){
+	return $(this).find("input").add(this).filter("input[type=date],input[data-type=date]").on("focus select", function(){
 	
 		var $calendar = $("+ div.calendar div", this).fadeIn('fast'),
 			days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
@@ -274,7 +298,7 @@ $.fn.date = function(){
 			$input = $(this);
 		
 		if(!$calendar.length){
-			$calendar = $('<div class="calendar"><div></div></div>').insertAfter(this).find('div');
+			$calendar = $('<div class="date"><div></div></div>').insertAfter(this).find('div');
 		}
 
 		// trigger close calendar when clicked outside
@@ -387,8 +411,16 @@ $.event.special.submit = {
  */
 $.fn.number = function(){
 
-	if($.support.number){
-		return $(this);
+	// Feature Detect
+	var support = (function(type){
+		var el = document.createElement("input");
+		el.type=type;
+		return el.type === type;
+	})("number");
+
+	// Does the browser support it already?
+	if(support){
+		//return $(this);
 	}
 
 	// kill iterations to increase the value
@@ -400,7 +432,7 @@ $.fn.number = function(){
 	});
 
 	// check for support for the input[type=number] attribute
-	return ( $(this).is("input[type=number],input[data-type=number]") ? $(this) : $("input[type=number],input[data-type=number]", this) ).each(function(){
+	return $(this).find("input").add(this).filter("input[type=number],input[data-type=number]").each(function(){
 		// Found
 
 		var el = this,
@@ -638,27 +670,205 @@ $.fn.number = function(){
 	}
 
 }(this, document, jQuery));
+//
+// Predict
+// A helper function to search items from a list
+// @author Andrew Dodson
+$.fn.predict = function(opts){
+
+	opts = opts || {};
+	opts.limit = opts.limit || 10;
+	opts.placeholder = opts.placeholder || "";
+	opts.selected = opts.selected || function(){};
+	opts.each = opts.each || function(){ return "<div>"+this+"</div>"; };
+	opts.filter = opts.filter || function (i,item,q){return !!q;};
+	opts.hintElement = opts.hintElement || null;
+	opts.dataListElement = opts.dataListElement || null;
+	opts.toggleItemClass = opts.toggleItemClass || "predict-list-item";
+
+
+	return $(this).each(function(){
+
+		if(!opts.hintElement){
+
+			// Create hint element
+			opts.hintElement = $("<input type='"+this.type+"' style='position:absolute;' class='predict-hint'/>");
+
+			// Create a hint element, wrap the current element in an position relative span
+			$(this).addClass("predict-input").wrap('<span class="predict"></span>').parent().prepend(opts.hintElement);
+		}
+
+		if(!opts.dataListElement){
+			// Create a hint element, wrap the current element in an position relative span
+			opts.dataListElement = $("<div></div>").addClass("predict-list").attr("tabindex","0").insertAfter(this);
+		}
+
+		var $input = $(this),
+			$list = $(opts.dataListElement),
+			$hint = $(opts.hintElement),
+			// Array of Items
+			list = [];
+
+
+		// Set the placeholder
+		$hint.val(opts.placeholder);
+
+		var focusDatalist = 0;
+
+		function datalistNavigate(e){
+
+			var $sel = $list.find('.'+opts.toggleItemClass).removeClass("hover");
+
+			switch(e.keyCode){
+				case 40: // Down Key
+					focusDatalist++;
+				break;
+				case 38: // Up Key
+					focusDatalist--;
+					if(focusDatalist<0){
+						focusDatalist += ($sel.length+1);
+					}
+				break;
+				case 13: // Return Key
+					if(focusDatalist){
+						$sel.eq(focusDatalist-1).trigger("click");
+					}
+				return;
+				default:
+				return false;
+			}
+			e.preventDefault();
+			e.stopPropagation();
+
+			focusDatalist = focusDatalist % ($sel.length+1);
+
+
+			if(focusDatalist>0){
+				$sel.eq( focusDatalist - 1 ).addClass("hover").siblings().removeClass("hover");
+			}
+
+			return true;
+		}
+
+		// Trigger the selection of the given item
+		function selected(i){
+
+			$input.add($hint).val($(list[i]).text());
+
+			var item = opts.data[i];
+			opts.selected.call(item,i,item);
+
+		}
+
+		// Build the List of items
+		// could use docFrag here for speed, Oh well.
+		$(opts.data).each(function(i){
+
+			// Create a new matchresource
+			var item = $(opts.each.call(this,i,this)).on("click", function(){
+				selected(i);
+			}).appendTo($list).get(0);
+
+			// Store item
+			list.push( item );
+		});
+
+		// Add list keyup
+		$list.on('keyup', datalistNavigate);
+
+		// hintID
+		var hintID;
+
+		// Add events to INPUT
+		$(this).on('keyup click', function(e){
+
+			e.stopPropagation();
+
+			// Is this a navigation of the list?
+			if(datalistNavigate(e)){
+				console.log("Break");
+				return;
+			}
+
+
+			var Q = this.value,
+				q = Q.toLowerCase();
+			
+			hintID = null;
+
+			// reset the current focus
+			focusDatalist = 0;
+
+			// Clear or set the placeholder
+			$hint.val(!!Q?'':opts.placeholder);
+
+			// Var limit
+			var limit = opts.limit;
+
+			// reset the focus Postiion of the datalist
+			$(list).each(function(i){
+				var T = $(this).text(),
+					t = T.toLowerCase();
+
+				var bool = (t.match(q) && opts.filter.call(this,i,opts.data[i],Q) );
+
+				$(this)[bool&&--limit>0?'addClass':'removeClass'](opts.toggleItemClass);
+
+				if( bool && !!Q && !!T && t.indexOf(q)===0 && hintID === null ){
+
+					hintID = i;
+
+					T = T.replace(new RegExp("^"+Q,'i'), function(m){
+						return Q;
+					});
+
+					$hint.val( T );
+				}
+			});
+
+		}).on('keydown',function(e){
+
+			e.stopPropagation();
+
+			// Submit the form
+			// User has clicked `tab`
+			if(e.which === 9 || e.which === 13){
+				if(focusDatalist){
+					e.preventDefault();
+					datalistNavigate(e);
+				}
+				else{
+					var hint = $hint.val();
+					var input = $input.val();
+					if(hint&&hint!==input){
+						e.preventDefault();
+						$(this).val(hint);
+						selected(hintID);
+					}
+				}
+			}
+		});
+	});
+};
 /**
  * Range
  */
 $.fn.range = function(){
 
-	if($.support.range){
-		return false;
-	}
-	// check for support for the placeholder attribute
-	return ( $(this).is("[type=range],[data-type=range]") ? $(this) : $("input", this) ).filter("[type=range],[data-type=range]").each(function(){
-	
-		/**
-			// hide the input box
-			$(this).hide();
+	// Feature Detect
+	var support = (function(type){
+		var el = document.createElement("input");
+		el.type=type;
+		return el.type === type;
+	})("range");
 
-			// Add a range slider
-			$("<div class='range'><div class='line'></div><div class='pointer'></div></div>").insertAfter(this).touch(function(e){
-				log(e.offsetX);
-				$("div.pointer", this).css({marginLeft:e.offsetX+"px"});
-			});
-		*/
+	if(support){
+		return $(this);
+	}
+
+	// check for support for the placeholder attribute
+	return $(this).find("input").add(this).filter("input[type=range],input[data-type=range]").each(function(){
+	
 		var step = parseFloat($(this).attr('step')) || 1,
 			max = parseFloat($(this).attr('max')) || 100,
 			min = parseFloat($(this).attr('min')) || 0,
@@ -667,7 +877,7 @@ $.fn.range = function(){
 		// Mouse key depressed
 		var clicked = false;
 		$(document).on("mousedown mouseup", function(e){
-			clicked = e.type === 'mousedown';
+			clicked = (e.type === 'mousedown');
 		});
 
 		$(this).addClass("range").bind("click mousemove",function(e){
@@ -697,8 +907,10 @@ $.fn.range = function(){
 
 			// value
 			$(this).val(v);
+			$(this).attr("value", v);
+			$(this).trigger('change');
 		});
-	}).watch('value', function(){
+	}).on('change', function(){
 	
 		var step = parseFloat($(this).attr('step')) || 1,
 			max = parseFloat($(this).attr('max')) || 100,
@@ -719,7 +931,7 @@ $.fn.range = function(){
  */
 $.fn.textarea = function(){
 
-	$($(this).is('textarea')?this:$("textarea", this ) ).on('keyup focus', function(){
+	return $(this).find("textarea").add(this).filter("textarea").on('keyup focus', function(){
 
 		var el = this;
 		if(el.tagName.toLowerCase()!=="textarea"){return;}
@@ -752,59 +964,15 @@ $.fn.textarea = function(){
  *	@since 25th may 2007
  *  @since Oct 2011 (that's refreshing!)
  */
-(function($){
- 
-	"use strict";
+$.fn.form = function(){
 
-	// test for support
-	$.support.datalist = test('input[list]');
-	$.support.placeholder = test('input[placeholder]');
-	$.support.range = test('input[type=range]');
-	$.support.number = test('input[type=number]');
-	$.support.date = test('input[type=date]');
-	$.support.color = test('input[type=color]');
+	return $(this).find('form').add(this).filter("form").each(function(){
 
-	// inputSupport
-	function test(s){
+		// the interval would be better if it was per input
+		var interval;
 
-		var m = s.match(/^([a-z]+)(\[([a-z]+)(\=([a-z]+))?\])?$/i);
-
-		try{
-			var el = document.createElement(m[1]);
-
-			if(m[3]&&m[5]){
-				el[m[3]] = m[5];
-				//console.log(test[m[3]] +':'+ m[5]);
-				return el[m[3]] === m[5];
-			}
-			else if(m[3]){
-				return m[3] in el;
-			}
-		}
-		catch(e){
-			return false;
-		}
-		return true;
-	}
-
-
-	// the interval would be better if it was per input
-	var interval;	
-
-
-	/**
-	 * Basic Custom events for user interactions
-	 */
-	$.fn.inputCustomEvents = function(){
-
-		$($(this).is(":input")?this:$(":input",this)).on('keydown', function(e){
-			if(e.which===40){
-				$(this).trigger('down');
-			}
-			if(e.which===38){
-				$(this).trigger('up');
-			}
-		}).filter('input,textarea').on('input blur', function(e){
+		// Add checks to elements on blur
+		var $inputs = $(this).find(":input").add(this).filter('input,textarea').on('input blur', function(e){
 			$(this)
 				.removeClass('error')
 				.next('div.error')
@@ -819,216 +987,62 @@ $.fn.textarea = function(){
 				$(this).checkValidity();
 			} else {
 				var el = this;
-				interval = setTimeout(function(){$(el).checkValidity();},3000);
+				interval = setTimeout(function(){$(el).checkValidity();},5000);
 			}
 		});
 
-		return $(this);
-	};
+
+		// Add the placeholder support
+		if($.fn.placeholder){
+			$inputs.placeholder();
+		}
+		
+		// Add the number support
+		if($.fn.number){
+			$inputs.number();
+		}
+
+		// Add range
+		if($.fn.range){
+			$inputs.range();
+		}
+
+		// Add color
+		if($.fn.color){
+			$inputs.color();
+		}
+	
+		// Add date
+		if($.fn.date){
+			$inputs.date();
+		}
+	
+		// Add datalist
+		if($.fn.datalist){
+			$inputs.datalist();
+		}
+
+		// Add textarea expand
+		if($.fn.textarea){
+			$inputs.textarea();
+		}
 
 
+	// prevent propagation of the form if it fails.
+	// this has to be bound to the form element directly, before additional events are added, otherwise it may not be executed.
+	}).submit(function(e){
 
+		var b = $(this).checkValidity();
 
-	/**
-	 * log
-	 */
-	function log(){
-		if (typeof(console) === 'undefined'||typeof(console.log) === 'undefined') return;
-		if (typeof console.log === 'function') {
-			console.log.apply(console, arguments); // FF, CHROME, Webkit
+		if(b){
+			// if this has passed lets remove placeholders
+			$(":input.placeholder[placeholder]", this).val("");
 		}
 		else{
-			console.log(Array.prototype.slice.call(arguments)); // IE
+			// prevent any further executions.. of course anything else could have been called.
+			e.preventDefault();
+			e.stopPropagation();
 		}
-	}
-
-
-	/**
-	 * Touch
-	 * @param callback function - Every touch event fired
-	 * @param complete function- Once all touch event ends
-	 */
-	$.fn.touch = function(callback, complete){
-
-
-		// Store pointer action
-		var mousedown = {};
-
-		$("body").bind('mousedown MSPointerDown', function(e){
-			mousedown[e.originalEvent.pointerId||0] = e.originalEvent;
-		});
-		
-		$("body").bind('mouseup MSPointerUp', function(e){
-			mousedown[e.originalEvent.pointerId||0] = null;
-		});
-
-		// loop through and add events
-		return $(this).each(function(){
-		
-			// bind events
-			$(this)
-				.bind("selectstart",function(e){return false;})
-				.bind("touchstart touchmove",function(e){
-					var touches = e.originalEvent.touches || e.originalEvent.changedTouches || [e];
-					for(var i=0; i<touches.length; i++){
-						touches[i].pointerId = touches[i].identifier;
-						touches[i].offsetX = touches[i].clientX - $(this).offset().left;
-						touches[i].offsetY = touches[i].clientY - $(this).offset().top;
-						
-						// do not paint on the touchstart
-						if(e.type==='touchmove'){
-							callback.call(this, touches[i],mousedown[touches[i].identifier]);
-						}
-						// save last event in a object literal
-						// to overcome event overwriting which means we can't just store the last event.
-						mousedown[touches[i].identifier] = {
-							offsetX : touches[i].offsetX,
-							offsetY : touches[i].offsetY,
-							pointerId : touches[i].pointerId
-						};
-					}
-					e.stopPropagation();
-					e.preventDefault();
-					return false;
-				})
-				.bind("mousemove MSPointerMove",function(e){
-				
-					if(e.type==='mousemove'&&"msPointerEnabled" in window.navigator){
-						return;
-					}
-			
-					// default pointer ID
-					e.originalEvent.pointerId = e.originalEvent.pointerId || 0;
-			
-					// only trigger if we have mousedown/pointerdown
-					if(( e.originalEvent.pointerId in mousedown ) && ( mousedown[e.originalEvent.pointerId] !== null )){
-						callback.call(this,e.originalEvent, mousedown[e.originalEvent.pointerId]);
-						mousedown[e.originalEvent.pointerId] = e.originalEvent;
-					}
-					e.preventDefault();
-					e.stopPropagation();
-				});
-		});
-	};
-
-
-
-	/**
-	 * $("form").form()
-	 * Converts forms with...
-	 * 1. "textarea[type=html]" to a WYSIWYG editor
-	 * 2. "table.multiple" to add buttons for adding/removing additional rows
-	 * 3. "input[placeholder] will add html5 placeholder
-	 */
-	$.fn.form = function(){
-	
-		return ( $(this).is('form') ? $(this) : $('form',this)).each(function(){
-
-			// Add the placeholder support
-			$(":input[placeholder],:input[data-placeholder]", this).placeholder();
-			
-			// Add the number support
-			$("input[type=number],input[data-type=number]", this).number();
-
-			// Add range
-			$("input[type=range],input[data-type=range]", this).range();
-
-			// Add color
-			$("input[type=color],input[data-type=color]", this).color();
-		
-			// Add date
-			$("input[type=date],input[data-type=date]", this).date();
-		
-			// Add datalist
-			$("input[list],input[data-list]", this).datalist();
-
-			// Add textarea expand
-			$("textarea", this).textarea();
-
-			// Add generic Events
-			$(":input", this).inputCustomEvents();
-		
-
-		// prevent propagation of the form if it fails.
-		// this has to be bound to the form element directly, before additional events are added, otherwise it may not be executed.
-		}).submit(function(e){
-
-			var b = $(this).checkValidity();
-
-			if(b){
-				// if this has passed lets remove placeholders
-				$(":input.placeholder[placeholder]", this).val("");
-			}
-			else{
-				// find the item in question and focus on it
-				var $first = $('.invalid',this);
-				if($first.length){
-					$first.get(0).focus();
-				}
-
-				// prevent any further executions.. of course anything else could have been called.
-				e.preventDefault();
-				e.stopPropagation();
-			}
-			return b;
-		});
-	};
-		
-	
-	/**
-	 * Watch
-	 * Trigger callbacks when attributes of an element change
-	 */
-	$.fn.watch = function(props, callback, timeout){
-
-		if(!timeout){
-			timeout = 10;
-		}
-		return this.each(function(){
-			var $el		= $(this),
-				el		= this,
-				func	= function(){ __check.call(el, $(el)); },
-				data	= {	props: props.split(","),
-							func:  callback,
-							vals:  [] };
-
-			$.each(data.props, function(i){
-				data.vals[i] = $el.prop(data.props[i]) || $el.css(data.props[i]) || $el.attr(data.props[i]);
-			});
-
-
-			if (typeof (this.onpropertychange) == "object" && "attachEvent" in this){
-
-				this.attachEvent("onpropertychange", func );
-
-			/**
-				never seems to work
-				} else if ($.browser.mozilla){
-				$el.bind("DOMAttrModified", callback);
-			*/
-
-			} else {
-				setInterval( func, timeout);
-			}
-
-
-			function __check($el) {
-				var changed = false,
-					temp	= "";
-				for(var i=0;i < data.props.length; i++) {
-					temp = $el.prop(data.props[i]) || $el.css(data.props[i]) || $el.attr(data.props[i]);
-					if(data.vals[i] != temp){
-						data.vals[i] = temp;
-						changed = true;
-						break;
-					}
-				}
-				if(changed && data.func) {
-					data.func.call($el, data);
-				}
-			}
-		});
-	};
-
-
-})(jQuery);
+		return b;
+	});
+};

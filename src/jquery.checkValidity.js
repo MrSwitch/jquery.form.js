@@ -128,6 +128,10 @@ $.fn.checkValidity = function(){
 	$(this).find(":input").add(this).filter(":input").each(function(){
 		if(b){
 			b = checkValidity(this);
+
+			if(!b){
+				$(this).focus();
+			}
 		}
 	});
 	

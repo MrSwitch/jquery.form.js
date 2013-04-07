@@ -5,20 +5,6 @@
 
 	<link href="/_packages/document.css" rel="stylesheet"/>
 
-	<!-- Plugins -->
-	<link rel="stylesheet" href="./src/jquery.checkValidity.css"/>
-	<link rel="stylesheet" href="./src/jquery.color.css"/>
-	<link rel="stylesheet" href="./src/jquery.datalist.css"/>
-	<link rel="stylesheet" href="./src/jquery.date.css"/>
-
-	<link rel="stylesheet" href="./src/jquery.number.css"/>
-	<link rel="stylesheet" href="./src/jquery.placeholder.css"/>
-	<link rel="stylesheet" href="./src/jquery.range.css"/>
-
-	<link rel="stylesheet" href="./src/jquery.editor.css"/>
-	<link rel="stylesheet" href="./src/jquery.predict.css"/>
-
-
 <script>
 //<![CDATA[
 		var local = ( /local/.test(window.location.host) ? 0 : 1);
@@ -32,6 +18,7 @@
 </script>
 
 	<script src="./sandbox/countryNames.js"></script>
+	<script src="/_packages/modernizr-2.0.js"></script>
 
 	<!-- EOF Plugins -->
 
@@ -55,18 +42,14 @@
 <body>
 
 
-
-<!--
-	HEADER
--->
 <nav class="toc"></nav>
 <header>
-	<h1>I say, good &lt;form&gt;!</h1>
+<h1>I say, good &lt;form&gt;!</h1>
 </header>
 
 <blockquote>
-	<p>Wot'O, this is a jolly jQuery plugin for adding cheeky HTML5 forms to your site and wotnot. So simple to use you'll be done before morning tea. 
-	<p>Should you be bored after tea, then dont worry, there's a rather ravishing WYSIWYG editor and a psyhic predictive text input to entertain you well in time for mid afternoon tea.
+<p>Wot'O, this is a jolly jQuery plugin for adding cheeky HTML5 forms to your site and wotnot. So simple to use you'll be done before morning tea. 
+<p>Should you be bored after tea, then dont worry, there's a rather ravishing WYSIWYG editor and a psyhic predictive text input to entertain you well in time for mid afternoon tea.
 </blockquote>
 
 
@@ -74,13 +57,15 @@
 <p>Simply, include the folllowing JavaScript file...
 
 <a href="./dist/jquery.form.js" class="pre">&lt;script src="./dist/jquery.form.js"&gt;&lt;/script&gt;</a>
- and CSS StyleSheet... 
+
+and CSS StyleSheet... 
+
 <a href="./dist/jquery.form.css" class="pre">&lt;link rel="stylesheet" href="./dist/jquery.form.css"/&gt;</a>
 
 Then at the bottom of the page invoke the shim on the form elements in the page...
 
 <pre class="pre">
-$("form").form();
+	$("form").form();
 </pre>
 
 <p>Minified versions are available at <a href="./dist/jquery.form.min.js">jquery.form.min.js</a> and add the css <a href="./dist/jquery.form.min.css">jquery.form.min.css</a>
@@ -88,12 +73,9 @@ $("form").form();
 <p>Alternatively you can implement the features individually, see below
 
 
-<!--
-	BODY
--->
-
-
 <h2>Check Validity (HTML5 Shim)</h2>
+
+
 	<form>
 		<label class="required">Text required</label> 
 		<input type="text" required/>
@@ -249,13 +231,13 @@ Bind the Control to any input elements with a placeholder attribute
 
 	<form>
 		<label>Number field</label>
-		<input type="number"/>
+		<input type="number" data-type="number"/>
 		<br />
 		<label>Number limited to [min=0] and [max=10]</label>
-		<input type="number" min="0" max="10"/>
+		<input type="number" data-type="number" min="0" max="10"/>
 		<br />
 		<label>Number with a [step]</label>
-		<input type="number" step="2"/>
+		<input type="number" data-type="number" step="2"/>
 	</form>
 
 Include the stylesheet
@@ -269,7 +251,7 @@ Include the script
 Bind the Control to the input elements with [type=number] attributes
 
 	<script class="pre">
-	$("input[type=number]").number();
+	$("input[type=number],input[data-type=number]").number();
 	</script>
 
 
@@ -369,9 +351,6 @@ Attach the data ('countryNames' here, is an Array, but it can be something else)
 		data : countryNames
 	});
 	</script>
-
-
-
 
 </body>
 </html>
