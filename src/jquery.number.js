@@ -14,7 +14,7 @@ $.fn.number = function(){
 
 	// Does the browser support it already?
 	if(support){
-		//return $(this);
+		return $(this);
 	}
 
 	// kill iterations to increase the value
