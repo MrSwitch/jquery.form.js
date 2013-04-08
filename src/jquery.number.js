@@ -7,9 +7,13 @@ $.fn.number = function(){
 
 	// Feature Detect
 	var support = (function(type){
-		var el = document.createElement("input");
-		el.type=type;
-		return el.type === type;
+		try{
+			var el = document.createElement("input");
+			el.type=type;
+			return el.type === type && "step" in el;
+		}catch(e){
+			return false;
+		}
 	})("number");
 
 	// Does the browser support it already?
@@ -22,6 +26,7 @@ $.fn.number = function(){
 	$(document.body).mouseup(function(){
 		if(interval){
 			clearTimeout(interval);
+			interval = null;
 		}
 	});
 
@@ -49,10 +54,10 @@ $.fn.number = function(){
 		// Listen for up down events on the element
 		$(this).bind('keypress', function(e){
 			var change = 0;
-			if(e.which===40){
+			if(e.keyCode===40){
 				change = -1;
 			}
-			if(e.which===38){
+			if(e.keyCode===38){
 				change = 1;
 			}
 
@@ -81,7 +86,7 @@ $.fn.number = function(){
 					increment(i?-1:1);
 
 					// press'n'hold can be cancelled by keyup (above)
-					interval = setTimeout(change,100);
+					interval = setTimeout(change,!!interval?100:500);
 				})();
 				
 			})
