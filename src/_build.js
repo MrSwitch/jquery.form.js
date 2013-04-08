@@ -21,7 +21,7 @@ var scripts = [], styles = [];
 
 
 fs.readdirSync('./').forEach(function(name){
-	if( name.match(/^jquery.*?\.js$/) && name !== "jquery.form.js" && name !== "jquery.editor.js" ){
+	if( name.match(/^jquery.*?\.js$/) && name !== "jquery.form.js" && name !== "jquery.editor.js" && name !== "jquery.predict.js" ){
 		scripts.push(name);
 	}
 	else if( name.match(/^jquery.*?\.css$/) && name !== "jquery.editor.css" ){
@@ -54,7 +54,11 @@ var build = {
 	"../dist/jquery.editor.js" : fs.readFileSync("./jquery.editor.js", "utf8"),
 	"../dist/jquery.editor.min.js" : UglifyJS.minify("./jquery.editor.js").code,
 	"../dist/jquery.editor.css" : fs.readFileSync("./jquery.editor.css", "utf8"),
-	"../dist/jquery.editor.min.css" : cleanCSS.process(fs.readFileSync("./jquery.editor.css").toString())
+	"../dist/jquery.editor.min.css" : cleanCSS.process(fs.readFileSync("./jquery.editor.css").toString()),
+	"../dist/jquery.predict.js" : fs.readFileSync("./jquery.predict.js", "utf8"),
+	"../dist/jquery.predict.min.js" : UglifyJS.minify("./jquery.predict.js").code,
+	"../dist/jquery.predict.css" : fs.readFileSync("./jquery.predict.css", "utf8"),
+	"../dist/jquery.predict.min.css" : cleanCSS.process(fs.readFileSync("./jquery.predict.css").toString())
 };
 
 for(var x in build){
