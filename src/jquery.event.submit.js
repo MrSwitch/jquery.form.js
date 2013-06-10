@@ -12,11 +12,16 @@ $.event.special.submit = {
 
 		handleObj.handler = function( event ) {
 			if ( !elem.checkValidity() ) {
-				// If the checkValidity passes
+
+				// If the checkValidity fails
 				// callback is bound matches the specified selector, prevent the
 				// default action without stopping propagation, and don't call
 				// the originally bound event handler.
 				event.preventDefault();
+
+				// Find the first invalid input and add a focus to that element
+				elem.find(":input.invalid").eq(0).focus();
+
 			} else {
 				// Otherwise call the originally-bound event handler and return
 				// its value.

@@ -109,7 +109,7 @@ function checkValidity(elem){
 				.addClass('invalid') // ADD CLASS
 				.after('<div class="errormsg">'+errorMsgs[x]+'</div>');
 
-			setTimeout(fadeOutErrMsg,1000);
+			setTimeout(fadeOutErrMsg,5000);
 
 			return false;
 		}
@@ -128,10 +128,6 @@ $.fn.checkValidity = function(){
 	$(this).find(":input").add(this).filter(":input").each(function(){
 		if(b){
 			b = checkValidity(this);
-
-			if(!b){
-				$(this).focus();
-			}
 		}
 	});
 	
