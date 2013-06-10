@@ -13,7 +13,7 @@ $.fn.predict = function(opts){
 	opts.hintElement = opts.hintElement || null;
 	opts.dataListElement = opts.dataListElement || null;
 	opts.toggleItemClass = opts.toggleItemClass || "predict-list-item";
-
+	opts.toggleItemClassHover = opts.toggleItemClassHover || opts.toggleItemClass+"-hover";
 
 	return $(this).each(function(){
 
@@ -45,7 +45,7 @@ $.fn.predict = function(opts){
 
 		function datalistNavigate(e){
 
-			var $sel = $list.find('.'+opts.toggleItemClass).removeClass("hover");
+			var $sel = $list.find('.'+opts.toggleItemClass).removeClass(opts.toggleItemClassHover);
 
 			switch(e.keyCode){
 				case 40: // Down Key
@@ -70,9 +70,8 @@ $.fn.predict = function(opts){
 
 			focusDatalist = focusDatalist % ($sel.length+1);
 
-
 			if(focusDatalist>0){
-				$sel.eq( focusDatalist - 1 ).addClass("hover").siblings().removeClass("hover");
+				$sel.eq( focusDatalist - 1 ).addClass(opts.toggleItemClassHover).siblings().removeClass(opts.toggleItemClassHover);
 			}
 
 			return true;
@@ -93,7 +92,8 @@ $.fn.predict = function(opts){
 		$(opts.data).each(function(i){
 
 			// Create a new matchresource
-			var item = $(opts.each.call(this,i,this)).on("click", function(){
+			var item = $(opts.each.call(this,i,this)).on("mousedown click", function(e){
+				e.preventDefault();
 				selected(i);
 			}).appendTo($list).get(0);
 

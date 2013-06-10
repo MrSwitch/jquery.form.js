@@ -39,12 +39,12 @@
 			cursor:pointer;
 			border-bottom:1px solid #ddd;
 		}
-		.predict-list-item.hover{
+		.predict-list-item-hover{
 			text-decoration:underline;
 		}
 
 
-	input:focus + .predict-list,
+	.predict-input:focus + .predict-list,
 	.predict-list:focus{
 		display:block;
 	}
