@@ -109,7 +109,7 @@ function checkValidity(elem){
 				.addClass('invalid') // ADD CLASS
 				.after('<div class="errormsg">'+errorMsgs[x]+'</div>');
 
-			setTimeout(fadeOutErrMsg,1000);
+			setTimeout(fadeOutErrMsg,5000);
 
 			return false;
 		}
@@ -128,10 +128,6 @@ $.fn.checkValidity = function(){
 	$(this).find(":input").add(this).filter(":input").each(function(){
 		if(b){
 			b = checkValidity(this);
-
-			if(!b){
-				$(this).focus();
-			}
 		}
 	});
 	
@@ -391,11 +387,16 @@ $.event.special.submit = {
 
 		handleObj.handler = function( event ) {
 			if ( !elem.checkValidity() ) {
-				// If the checkValidity passes
+
+				// If the checkValidity fails
 				// callback is bound matches the specified selector, prevent the
 				// default action without stopping propagation, and don't call
 				// the originally bound event handler.
 				event.preventDefault();
+
+				// Find the first invalid input and add a focus to that element
+				elem.find(":input.invalid").eq(0).focus();
+
 			} else {
 				// Otherwise call the originally-bound event handler and return
 				// its value.

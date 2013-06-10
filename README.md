@@ -7,7 +7,7 @@
 
 
 Wot'O, this is a jolly jQuery plugin for adding cheeky HTML5 forms to your site and wotnot. So simple to use you'll be done before morning tea. 
-Should you be bored after tea, then dont worry, there's a rather ravishing WYSIWYG editor and a psyhic predictive text input to entertain you well in time for mid afternoon tea.
+Should you be bored after tea, then fear not for the want of being excited! There's a cracking WYSIWYG editor and a psyhic predictive text input to entertain you well in time for afternoon tea.
 
 
 
